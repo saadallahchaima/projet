@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../entry_point.dart';
 import 'WelcomScreen.dart';
 import 'signup_screen.dart';
+import 'home/homepage.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
@@ -22,27 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    // Vérifier si les champs sont vides
-    if (email.isEmpty || password.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Champs vides'),
-          content: const Text('Veuillez remplir tous les champs.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-      return; // Arrêter l'exécution de la fonction si les champs sont vides
-    }
-
-    // Envoyer la requête HTTP POST pour l'authentification
     var url = Uri.parse("http://192.168.1.15/projet_api/login.php");
     var response = await http.post(
       url,
@@ -52,27 +32,24 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
 
-    // Vérifier la réponse
     if (response.statusCode == 200) {
       var responseData = json.decode(response.body);
       String status = responseData["status"];
 
       if (status == "success") {
-        // Authentification réussie, rediriger vers la page d'accueil
         Navigator.pushNamed(context, EntryPoint.routeName);
       } else {
-        // Authentification échouée, afficher un message d'erreur
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Erreur de connexion'),
-            content: const Text('Les informations de connexion sont incorrectes.'),
+            title: Text('Erreur de connexion'),
+            content: Text('Les informations de connexion sont incorrectes.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop();
                 },
-                child: const Text('OK'),
+                child: Text('OK'),
               ),
             ],
           ),
@@ -83,14 +60,14 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Erreur'),
-          content: const Text('Une erreur s\'est produite lors de la connexion.'),
+          title: Text('Erreur'),
+          content: Text('Une erreur s\'est produite lors de la connexion.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(ctx).pop();
               },
-              child: const Text('OK'),
+              child: Text('OK'),
             ),
           ],
         ),
@@ -112,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Icon(icon, size: 24),
           TextButton(
             onPressed: () => Navigator.of(context).pushNamed(SignupScreen.routeName),
-            child: const Text('Sign up'),
+            child: Text('Sign up'),
           ),
         ],
       ),
@@ -133,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Icon(icon, size: 24),
           TextButton(
             onPressed: () => Navigator.of(context).pushNamed(WelcomeScreen.routeName),
-            child: const Text('LogOut'),
+            child: Text('LogOut'),
           ),
         ],
       ),
@@ -143,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget userInput(TextEditingController userInput, String hintTitle, TextInputType keyboardType) {
     return Container(
       height: 55,
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(color: Colors.blueGrey.shade200, borderRadius: BorderRadius.circular(30)),
       child: Padding(
         padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
@@ -154,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
           autofocus: false,
           decoration: InputDecoration.collapsed(
             hintText: hintTitle,
-            hintStyle: const TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic),
+            hintStyle: TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic),
           ),
           keyboardType: keyboardType,
         ),
@@ -172,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               height: 700,
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15),
@@ -185,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 45),
+                    SizedBox(height: 45),
                     Image.network(
                       'https://img.freepik.com/vecteurs-libre/prix-eleve-pour-concept-carburant-voiture-gens-gaspillent-argent-pour-essence-changent-voiture-pour-scooter-economisent-argent-illustration-vectorielle-plane-pour-economie-ravitaillement-concept-transport-urbain_74855-10089.jpg?w=1060&t=st=1688502380~exp=1688502980~hmac=.jpg',
                       width: 200,
@@ -202,8 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           primary: Colors.indigo.shade800,
                         ),
-                        onPressed: _login,
-                        child: const Text(
+                     onPressed: _login,
+                        //onPressed: () => Navigator.of(context).pushNamed(EntryPoint.routeName),
+
+                        child: Text(
                           'Login',
                           style: TextStyle(
                             fontSize: 20,
@@ -213,9 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Center(child: Text('Forgot password ?')),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
+                    Center(child: Text('Forgot password ?')),
+                    SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.only(top: 25.0),
                       child: Row(
@@ -226,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    const Divider(thickness: 0, color: Colors.white),
+                    Divider(thickness: 0, color: Colors.white),
                   ],
                 ),
               ),

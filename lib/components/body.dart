@@ -18,36 +18,9 @@ class Body extends StatefulWidget {
   @override
   _BodyState createState() => _BodyState();
 }
-
 class _BodyState extends State<Body> {
-  Future<void> deleteUser(int? userID) async {
-    if (userID == null) {
-      return;
-    }
-
-    try {
-      var response = await http.get(Uri.parse('http://192.168.1.15/projet_api/delete_user.php?id_user=$userID'));
-
-      if (response.statusCode == 200) {
-        print('L\'utilisateur a été supprimé avec succès.');
-        setState(() {
-          users.removeWhere((user) => user.userId == userID);
-        });
-      } else {
-        print('Une erreur s\'est produite lors de la suppression de l\'utilisateur.');
-        print('Code d\'erreur: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Une erreur s\'est produite lors de la suppression de l\'utilisateur : $error');
-    }
-  }
-
   final String apiUrl = 'http://192.168.1.15/projet_api/user.php';
   List<User> users = [];
-
-
-
-
 
   Future<List<User>> getUsers() async {
     final response = await http.get(Uri.parse(apiUrl));
@@ -102,139 +75,170 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
-                ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    final user = users[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: kDefaultPadding,
-                        vertical: kDefaultPadding / 2,
-                      ),
-                      height: 160,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailUser(user: user),
+                FutureBuilder<List<User>>(
+                  future: getUsers(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final user = snapshot.data![index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding,
+                              vertical: kDefaultPadding / 2,
                             ),
-                          );
-                        },
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: <Widget>[
-                            Container(
-                              height: 136,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                color: index.isEven ? kBlueColor : kSecondaryColor,
-                                boxShadow: const [kDefaultShadow],
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(22),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                            height: 160,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailUser(user: user),
+                                  ),
+                                );
+                              },
+                              child: Stack(
+                                alignment: Alignment.bottomCenter,
+                                children: <Widget>[
+                                  Container(
+                                    height: 136,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(22),
+                                      color: index.isEven ? kBlueColor : kSecondaryColor,
+                                      boxShadow: const [kDefaultShadow],
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
                                     children: <Widget>[
-                                      const Spacer(),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        child: Text(
-                                          "Nom: ${user.nom}",
-                                          style: Theme.of(context).textTheme.labelLarge,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            const Spacer(),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                              child: Text(
+                                                "Nom: ${user.nom}",
+                                                style: Theme.of(context).textTheme.labelLarge,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                                              child: Text(
+                                                "Email: ${user.email}",
+                                                style: Theme.of(context).textTheme.labelLarge,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: kDefaultPadding * 1.5,
+                                                vertical: kDefaultPadding / 4,
+                                              ),
+                                              decoration: const BoxDecoration(
+                                                color: kSecondaryColor,
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight: Radius.circular(22),
+                                                  topLeft: Radius.circular(22),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Numero de carte: ${user.cin}",
+                                                style: Theme.of(context).textTheme.labelLarge,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        child: Text(
-                                          "Email: ${user.email}",
-                                          style: Theme.of(context).textTheme.labelLarge,
-                                        ),
-                                      ),
-                                      const Spacer(),
+                                      const SizedBox(width: kDefaultPadding),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: kDefaultPadding * 1.5,
-                                          vertical: kDefaultPadding / 4,
-                                        ),
-                                        decoration: const BoxDecoration(
-                                          color: kSecondaryColor,
-                                          borderRadius: BorderRadius.only(
-                                            bottomRight: Radius.circular(22),
-                                            topLeft: Radius.circular(22),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "Numero de carte: ${user.cin}",
-                                          style: Theme.of(context).textTheme.labelLarge,
+                                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                        height: 110,
+                                        width: 150,
+                                        child: Image.asset(
+                                          "images/profile.png",
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                                  height: 110,
-                                  width: 150,
-                                  child: Image.asset(
-                                    "images/profile.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Row(
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: const Icon(Icons.remove_red_eye_sharp),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                         // builder: (context) => UserEditPage(user: user),
-                                          builder: (context) => ProfileScreen(user: user),
-
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Row(
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: const Icon(Icons.remove_red_eye_sharp),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ProfileScreen(user: user),
+                                              ),
+                                            );
+                                          },
                                         ),
-                                      );
-                                    },
-                                  ),
+                                        IconButton(
+                                          icon: Icon(user.isActive ? Icons.check_circle : Icons.cancel),
+                                          onPressed: () {
+                                            setState(() {
+                                              user.isActive = !user.isActive;
+                                            });
+                                          },
+                                        ),
+                                        Container(
+                                          height: 55,
+                                          padding: const EdgeInsets.only(top: 5, left: 70, right: 70),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                              backgroundColor: Colors.indigo.shade800,
+                                            ),
+                                            onPressed: () async {
+                                              var url = Uri.parse('http://192.168.1.15/projet_api/delete_user.php');
+                                              var response = await http.post(url, body: {'id_user': user.userId.toString()});
+
+                                              if (response.statusCode == 200) {
+                                                print('Utilisateur supprimé avec succès.');
+                                              } else {
+                                                print('Erreur lors de la suppression de l\'utilisateur.');
+                                              }
+                                            },
 
 
 
-                                  IconButton(
-                                    icon: Icon(user.isActive ? Icons.check_circle : Icons.cancel),
-                                    onPressed: () {
-                                      setState(() {
-                                        user.isActive = !user.isActive;
-                                      });
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () {
-                                      deleteUser(user.id);
-                                    },
+                                            child: Text(
+                                              'delete',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Erreur lors de la récupération des utilisateurs');
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
                   },
                 ),
               ],

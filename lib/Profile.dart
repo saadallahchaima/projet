@@ -103,9 +103,14 @@ class ProfileScreen extends StatelessWidget {
 
 
           ],
+
         ),
+
+
       ),
+
     );
+
   }
 
 }
@@ -152,6 +157,7 @@ class ProfileDetailColumn extends StatelessWidget {
             Icons.lock_outline,
             size: 10.sp,
           ),
+
         ],
       ),
     );
