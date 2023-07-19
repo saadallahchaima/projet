@@ -1,9 +1,9 @@
 class User {
-  final String nom;
-  final String email;
-  final String phone;
-  final String cin;
-  final int? id;
+  String nom;
+  String email;
+  String phone;
+  String cin;
+  String id;
   bool isActive;
 
   User({
@@ -11,9 +11,8 @@ class User {
     required this.email,
     required this.phone,
     required this.cin,
-    this.id,
+    required this.id,
     this.isActive = true,
   });
-
-  int? get userId => id;
 }
+

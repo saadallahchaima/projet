@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../entry_point.dart';
 import 'WelcomScreen.dart';
@@ -18,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isObscurePassword = true;
 
   Future<void> _login() async {
     String email = emailController.text;
@@ -129,9 +130,22 @@ class _LoginScreenState extends State<LoginScreen> {
           autocorrect: false,
           enableSuggestions: false,
           autofocus: false,
-          decoration: InputDecoration.collapsed(
+          obscureText: keyboardType == TextInputType.visiblePassword ? isObscurePassword : false,
+          decoration: InputDecoration(
             hintText: hintTitle,
             hintStyle: TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic),
+            border: InputBorder.none,
+            suffixIcon: keyboardType == TextInputType.visiblePassword
+                ? IconButton(
+              icon: Icon(isObscurePassword ? Icons.visibility_off : Icons.visibility),
+              color: Colors.grey,
+              onPressed: () {
+                setState(() {
+                  isObscurePassword = !isObscurePassword;
+                });
+              },
+            )
+                : null,
           ),
           keyboardType: keyboardType,
         ),
@@ -179,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                           primary: Colors.indigo.shade800,
                         ),
-                     onPressed: _login,
+                        onPressed: _login,
                         //onPressed: () => Navigator.of(context).pushNamed(EntryPoint.routeName),
 
                         child: Text(

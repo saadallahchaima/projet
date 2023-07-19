@@ -4,9 +4,9 @@ import 'package:projet/Profile.dart';
 import 'package:projet/components/search_box.dart';
 import 'dart:convert';
 
-import '../Screens/detail_user.dart';
 import '../constants.dart';
 import '../models/User.dart';
+import '../update_user.dart';
 
 class Body extends StatefulWidget {
   final int index;
@@ -33,12 +33,32 @@ class _BodyState extends State<Body> {
           email: data['email'].toString(),
           phone: data['phone'].toString(),
           cin: data['cin'].toString(),
-          id: data['id'],
+          id: data['id'].toString(),
           isActive: data['isActive'] ?? true,
         );
       }).toList();
     } else {
       throw Exception('Erreur lors de la récupération des utilisateurs');
+    }
+  }
+  Future<void> updateUser(User user) async {
+    final url = 'http://192.168.1.15/projet_api/update_user.php';
+
+    final response = await http.post(Uri.parse(url), body: {
+      'id': user.id,
+      'nom': user.nom,
+      'email': user.email,
+      'phone': user.phone,
+      'cin': user.cin,
+    });
+
+    if (response.statusCode == 200) {
+      // Mise à jour réussie
+      setState(() {
+        user.isActive = !user.isActive;
+      });
+    } else {
+      throw Exception('Erreur lors de la mise à jour de l\'utilisateur');
     }
   }
 
@@ -83,6 +103,8 @@ class _BodyState extends State<Body> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           final user = snapshot.data![index];
+
+
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               horizontal: kDefaultPadding,
@@ -90,14 +112,6 @@ class _BodyState extends State<Body> {
                             ),
                             height: 160,
                             child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailUser(user: user),
-                                  ),
-                                );
-                              },
                               child: Stack(
                                 alignment: Alignment.bottomCenter,
                                 children: <Widget>[
@@ -187,45 +201,25 @@ class _BodyState extends State<Body> {
                                           },
                                         ),
                                         IconButton(
-                                          icon: Icon(user.isActive ? Icons.check_circle : Icons.cancel),
+                                          icon: const Icon(Icons.edit),
                                           onPressed: () {
-                                            setState(() {
-                                              user.isActive = !user.isActive;
-                                            });
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => UpdateRecord(
+                                                    user.nom,
+                                                    user.email,
+                                                    user.phone,
+                                                    user.cin
+
+
+                                                ),
+                                              ),
+                                            );
                                           },
                                         ),
-                                        Container(
-                                          height: 55,
-                                          padding: const EdgeInsets.only(top: 5, left: 70, right: 70),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                              backgroundColor: Colors.indigo.shade800,
-                                            ),
-                                            onPressed: () async {
-                                              var url = Uri.parse('http://192.168.1.15/projet_api/delete_user.php');
-                                              var response = await http.post(url, body: {'id_user': user.userId.toString()});
 
-                                              if (response.statusCode == 200) {
-                                                print('Utilisateur supprimé avec succès.');
-                                              } else {
-                                                print('Erreur lors de la suppression de l\'utilisateur.');
-                                              }
-                                            },
-
-
-
-                                            child: Text(
-                                              'delete',
-                                              style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w700,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                              ],
                                     ),
                                   ),
                                 ],

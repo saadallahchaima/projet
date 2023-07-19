@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
 
 import 'entry_point.dart';
@@ -20,8 +21,9 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: WelcomeScreen(),
+          home: SplashPage(),
           routes: {
+            SplashPage.routeName: (context) => SplashPage(),
             WelcomeScreen.routeName: (context) => WelcomeScreen(),
             SignupScreen.routeName: (context) => SignupScreen(),
             LoginScreen.routeName: (context) => LoginScreen(),

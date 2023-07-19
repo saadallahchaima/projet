@@ -29,10 +29,7 @@ class ProfileScreen extends StatelessWidget {
                   kHalfWidthSizedBox,
                   Text(
                     'Report',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleSmall,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ],
               ),
@@ -55,9 +52,7 @@ class ProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: SizerUtil.deviceType == DeviceType.tablet
-                        ? 12.w
-                        : 13.w,
+                    radius: SizerUtil.deviceType == DeviceType.tablet ? 12.w : 13.w,
                     backgroundColor: kSecondaryColor,
                     backgroundImage: AssetImage('images/profile.png'),
                   ),
@@ -68,13 +63,10 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Text(
                         user.nom,
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .titleMedium,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -100,24 +92,17 @@ class ProfileScreen extends StatelessWidget {
               title: 'Phone Number',
               value: user.phone,
             ),
-
-
           ],
-
         ),
-
+      ),
+      floatingActionButton: Container(
+        alignment: Alignment.center,
 
       ),
 
     );
-
   }
-
 }
-
-
-
-
 
 class ProfileDetailColumn extends StatelessWidget {
   final String title;
@@ -150,14 +135,13 @@ class ProfileDetailColumn extends StatelessWidget {
                 child: Divider(
                   thickness: 1.0,
                 ),
-              )
+              ),
             ],
           ),
           Icon(
             Icons.lock_outline,
             size: 10.sp,
           ),
-
         ],
       ),
     );

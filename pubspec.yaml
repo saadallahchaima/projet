@@ -47,6 +47,7 @@ dependencies:
   flutter_vector_icons: ^2.0.0
   sizer: ^2.0.15
   flutter_sizer: ^1.0.5
+  animated_splash_screen: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -83,12 +84,13 @@ flutter:
       - images/carr.jpg
       - assets/menu_button.riv
       - assets/check_error.riv
-      -  assets/confetti.riv
+      - assets/confetti.riv
       - assets/crossred.png
       - assets/icons/search.svg
       - assets/icons/back.svg
       - assets/icons/notification.svg
       - images/profile.png
+      - assets/petrol.png
   #   - images/a_dot_ham.jpeg
 
 
