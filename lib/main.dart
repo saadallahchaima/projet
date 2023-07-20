@@ -21,17 +21,19 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: SplashPage(),
+
+          home: Bg(),
           routes: {
-            SplashPage.routeName: (context) => SplashPage(),
+           // SplashScreen.routeName: (context) => SplashScreen(),
             WelcomeScreen.routeName: (context) => WelcomeScreen(),
             SignupScreen.routeName: (context) => SignupScreen(),
             LoginScreen.routeName: (context) => LoginScreen(),
-            EntryPoint.routeName: (context) => EntryPoint(),
+           EntryPoint.routeName: (context) => EntryPoint(),
           },
         );
       },
     );
   }
+
 }
 
