@@ -1,17 +1,21 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+import 'WelcomScreen.dart';
+
 class Bg extends StatefulWidget {
+  static const routeName = '/splash-screen';
+
   @override
   _BgState createState() => _BgState();
 }
 
 class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
+
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;
   late Animation<double> _scaleAnimation;
   late Animation<double> _textOpacityAnimation;
-
   bool _shapeAnimationCompleted = false;
 
   @override
@@ -57,6 +61,23 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
         _controller.forward();
       }
     });
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed && !_shapeAnimationCompleted) {
+        setState(() {
+          _shapeAnimationCompleted = true;
+        });
+        _controller.reset();
+        _controller.forward();
+
+        // Naviguer vers la page suivante lorsque l'animation est terminée
+        Navigator.pushReplacementNamed(context, WelcomeScreen.routeName);
+      } else if (status == AnimationStatus.dismissed && _shapeAnimationCompleted) {
+        setState(() {
+          _shapeAnimationCompleted = false;
+        });
+        _controller.forward();
+      }
+    });
 
     _controller.forward();
   }
@@ -69,10 +90,13 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    return Scaffold(
+        backgroundColor: Colors.white, // Set the background color to white
+        body: Center(
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+
           AnimatedBuilder(
             animation: _rotationAnimation,
             builder: (context, child) {
@@ -99,10 +123,10 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
                     begin: Alignment(-0.7, -0.71),
                     end: Alignment(0.7, 0.71),
                     colors: [
-                      Color(0xFF9F56FC),
-                      Color(0xFFFF26A7),
-                      Color(0xFFFF9A7A),
-                      Color(0xFFE2D66E),
+                      Color(0xFF56A1FC),
+                      Color(0xFF26CCFF),
+                      Color(0xFF0A58E5),
+                      Color(0xFF010D28),
                     ],
                   ),
                   shape: RoundedRectangleBorder(
@@ -134,6 +158,7 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
           ),
         ],
       ),
+    ),
     );
   }
 }

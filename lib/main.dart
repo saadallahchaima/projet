@@ -20,11 +20,12 @@ class MyApp extends StatelessWidget {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
+
           debugShowCheckedModeBanner: false,
 
           home: Bg(),
           routes: {
-           // SplashScreen.routeName: (context) => SplashScreen(),
+            Bg.routeName: (context) => Bg(),
             WelcomeScreen.routeName: (context) => WelcomeScreen(),
             SignupScreen.routeName: (context) => SignupScreen(),
             LoginScreen.routeName: (context) => LoginScreen(),
