@@ -48,7 +48,8 @@ class DetailUser extends StatelessWidget {
           email: data['email'].toString(),
           phone: data['phone'].toString(),
           cin: data['cin'].toString(),
-          id: data['id'].toString(),
+          id: data['id'],
+          password: data['password'].toString(),
         );
       }).toList();
     } else {

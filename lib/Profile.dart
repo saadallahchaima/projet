@@ -62,7 +62,7 @@ class ProfileScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        user.nom,
+                        user.nom ?? '', // Use the null-aware operator ??
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
@@ -73,36 +73,31 @@ class ProfileScreen extends StatelessWidget {
             sizedBox,
             ProfileDetailColumn(
               title: 'Carte d identité ',
-              value: user.cin,
+              value: user.cin ?? '', // Use the null-aware operator ??
             ),
             sizedBox,
             ProfileDetailColumn(
               title: 'Email',
-              value: user.email,
+              value: user.email ?? '', // Use the null-aware operator ??
             ),
             ProfileDetailColumn(
               title: 'Name',
-              value: user.nom,
-            ),
-            ProfileDetailColumn(
-              title: 'Etat',
-              value: user.isActive.toString(),
+              value: user.nom ?? '', // Use the null-aware operator ??
             ),
             ProfileDetailColumn(
               title: 'Phone Number',
-              value: user.phone,
+              value: user.phone ?? '', // Use the null-aware operator ??
             ),
           ],
         ),
       ),
       floatingActionButton: Container(
         alignment: Alignment.center,
-
       ),
-
     );
   }
 }
+
 
 class ProfileDetailColumn extends StatelessWidget {
   final String title;

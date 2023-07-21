@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'Listetest.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
 
           debugShowCheckedModeBanner: false,
 
-          home: Bg(),
+          home: EntryPoint(),
           routes: {
             Bg.routeName: (context) => Bg(),
             WelcomeScreen.routeName: (context) => WelcomeScreen(),

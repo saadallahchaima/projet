@@ -6,10 +6,11 @@ import 'package:http/http.dart' as http;
 import '../entry_point.dart';
 import 'WelcomScreen.dart';
 import 'signup_screen.dart';
-import 'home/homepage.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
+
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -43,14 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text('Erreur de connexion'),
-            content: Text('Les informations de connexion sont incorrectes.'),
+            title: const Text('Erreur de connexion'),
+            content: const Text('Les informations de connexion sont incorrectes.'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           ),
@@ -61,14 +62,14 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text('Erreur'),
-          content: Text('Une erreur s\'est produite lors de la connexion.'),
+          title: const Text('Erreur'),
+          content: const Text('Une erreur s\'est produite lors de la connexion.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(ctx).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Icon(icon, size: 24),
           TextButton(
             onPressed: () => Navigator.of(context).pushNamed(SignupScreen.routeName),
-            child: Text('Sign up'),
+            child: const Text('Sign up'),
           ),
         ],
       ),
@@ -111,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Icon(icon, size: 24),
           TextButton(
             onPressed: () => Navigator.of(context).pushNamed(WelcomeScreen.routeName),
-            child: Text('LogOut'),
+            child: const Text('LogOut'),
           ),
         ],
       ),
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget userInput(TextEditingController userInput, String hintTitle, TextInputType keyboardType) {
     return Container(
       height: 55,
-      margin: EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(color: Colors.blueGrey.shade200, borderRadius: BorderRadius.circular(30)),
       child: Padding(
         padding: const EdgeInsets.only(left: 25.0, top: 15, right: 25),
@@ -133,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
           obscureText: keyboardType == TextInputType.visiblePassword ? isObscurePassword : false,
           decoration: InputDecoration(
             hintText: hintTitle,
-            hintStyle: TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic),
+            hintStyle: const TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic),
             border: InputBorder.none,
             suffixIcon: keyboardType == TextInputType.visiblePassword
                 ? IconButton(
@@ -156,75 +157,66 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 700,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 45),
-                    Image.network(
-                      'https://img.freepik.com/vecteurs-libre/prix-eleve-pour-concept-carburant-voiture-gens-gaspillent-argent-pour-essence-changent-voiture-pour-scooter-economisent-argent-illustration-vectorielle-plane-pour-economie-ravitaillement-concept-transport-urbain_74855-10089.jpg?w=1060&t=st=1688502380~exp=1688502980~hmac=.jpg',
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    userInput(emailController, 'Email', TextInputType.emailAddress),
-                    userInput(passwordController, 'Password', TextInputType.visiblePassword),
-                    Container(
-                      height: 55,
-                      padding: const EdgeInsets.only(top: 5, left: 70, right: 70),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          primary: Colors.indigo.shade800,
-                        ),
-                        onPressed: _login,
-                        //onPressed: () => Navigator.of(context).pushNamed(EntryPoint.routeName),
-
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Center(child: Text('Forgot password ?')),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          login(Icons.add),
-                          logout(Icons.logout),
-                        ],
-                      ),
-                    ),
-                    Divider(thickness: 0, color: Colors.white),
-                  ],
-                ),
-              ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
             ),
-          ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 45),
+                Image.network(
+                  'https://img.freepik.com/vecteurs-libre/prix-eleve-pour-concept-carburant-voiture-gens-gaspillent-argent-pour-essence-changent-voiture-pour-scooter-economisent-argent-illustration-vectorielle-plane-pour-economie-ravitaillement-concept-transport-urbain_74855-10089.jpg?w=1060&t=st=1688502380~exp=1688502980~hmac=.jpg',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+                userInput(emailController, 'Email', TextInputType.emailAddress),
+                userInput(passwordController, 'Password', TextInputType.visiblePassword),
+                Container(
+                  height: 55,
+                  padding: const EdgeInsets.only(top: 5, left: 70, right: 70),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), backgroundColor: Colors.indigo.shade800,
+                    ),
+                    onPressed: _login,
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Center(child: Text('Forgot password ?')),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      login(Icons.add),
+                      logout(Icons.logout),
+                    ],
+                  ),
+                ),
+                const Divider(thickness: 0, color: Colors.white),
+              ],
+            ),
+          ),
         ),
       ),
     );
