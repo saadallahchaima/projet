@@ -37,20 +37,6 @@ class _SignupScreenState extends State<SignupScreen> {
       return 'Please enter a password';
     }
 
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
-    }
-
-    // Vérification de la présence d'au moins un chiffre
-    if (!value.contains(RegExp(r'\d'))) {
-      return 'Password must contain at least one digit';
-    }
-
-    // Vérification de la présence d'au moins un caractère spécial
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain at least one special character';
-    }
-
     return null; // La validation a réussi
   }
   var db = Mysql();

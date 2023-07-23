@@ -23,7 +23,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
 
   Future<void> updateRecord() async {
     try {
-      String uri = "http://192.168.1.15/projet_api/update_user.php";
+      String uri = "http://192.168.1.156/projet_api/update_user.php";
       var res = await http.post(Uri.parse(uri), body: {
         "nom": name.text,
         "email": email.text,
@@ -54,10 +54,8 @@ class _UpdateRecordState extends State<UpdateRecord> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      //  leading: EdgeInsets.all(15),
         title: Text('Update Record'),
       ),
-
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -68,6 +66,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
               },
               child: Stack(
                 alignment: Alignment.center,
+
                 children: [
                   Container(
                     width: 130,
@@ -139,6 +138,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
               ),
             ),
             SizedBox(height: 20),
+            // Placer le bouton ici après les champs de texte
             ElevatedButton(
               onPressed: () {
                 updateRecord();
@@ -150,4 +150,6 @@ class _UpdateRecordState extends State<UpdateRecord> {
       ),
     );
   }
+
+
 }

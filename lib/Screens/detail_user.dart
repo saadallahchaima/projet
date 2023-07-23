@@ -10,7 +10,7 @@ class DetailUser extends StatelessWidget {
   final User? user;
 
   const DetailUser({Key? key, this.user}) : super(key: key);
-  final String apiUrl = 'http:// 192.168.1.15/projet_api/user.php';
+  final String apiUrl = 'http://192.168.1.156/projet_api/user.php';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

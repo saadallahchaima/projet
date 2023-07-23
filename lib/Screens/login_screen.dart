@@ -21,62 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   bool isObscurePassword = true;
 
-  Future<void> _login() async {
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    var url = Uri.parse("http://192.168.1.15/projet_api/login.php");
-    var response = await http.post(
-      url,
-      body: {
-        "email": email,
-        "password": password,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var responseData = json.decode(response.body);
-      String status = responseData["status"];
-
-      if (status == "success") {
-        Navigator.pushNamed(context, EntryPoint.routeName);
-      } else {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Erreur de connexion'),
-            content: const Text('Les informations de connexion sont incorrectes.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
-    } else {
-      // Erreur de requête HTTP
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Erreur'),
-          content: const Text('Une erreur s\'est produite lors de la connexion.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   Widget login(IconData icon) {
     return Container(
       height: 50,
@@ -90,14 +34,14 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Icon(icon, size: 24),
           TextButton(
-            onPressed: () => Navigator.of(context).pushNamed(SignupScreen.routeName),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(SignupScreen.routeName),
             child: const Text('Sign up'),
           ),
         ],
       ),
     );
   }
-
   Widget logout(IconData icon) {
     return Container(
       height: 50,
@@ -111,12 +55,76 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Icon(icon, size: 24),
           TextButton(
-            onPressed: () => Navigator.of(context).pushNamed(WelcomeScreen.routeName),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(WelcomeScreen.routeName),
             child: const Text('LogOut'),
           ),
         ],
       ),
     );
+  }
+  Future<void> _login() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    var url = Uri.parse("http://192.168.1.156/projet_api/test.php");
+    var response = await http.post(
+      url,
+      body: {
+        "email": email,
+        "password": password,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      var role = responseData['role'];
+      if (role == 'admin') {
+        Navigator.pushNamed(context, EntryPoint.routeName);
+      } else if (role == 'user') {
+        Navigator.pushNamed(context, WelcomeScreen.routeName);
+      } else {
+        showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: const Text('Erreur de connexion'),
+                content: const Text(
+                    'Les informations de connexion sont incorrectes.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+        );
+      }
+    } else {
+      // Erreur de requête HTTP
+      showDialog(
+        context: context,
+        builder: (ctx) =>
+            AlertDialog(
+              title: const Text('Erreur'),
+              content: const Text(
+                  'Une erreur s\'est produite lors de la connexion.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+      );
+    }
+
+
+
   }
 
   Widget userInput(TextEditingController userInput, String hintTitle, TextInputType keyboardType) {

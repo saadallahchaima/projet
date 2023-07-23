@@ -21,7 +21,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final String apiUrl = 'http://192.168.1.15/projet_api/user.php';
+  final String apiUrl = 'http://192.168.1.156/projet_api/user.php';
   List<User> users = [];
 
   Future<List<User>> getUsers() async {
@@ -52,7 +52,7 @@ class _BodyState extends State<Body> {
 
     print('Deleting user with ID: $id');
 
-    final url = 'http://192.168.1.15/projet_api/delete_user.php?id_user=$id';
+    final url = 'http://192.168.1.156/projet_api/delete_user.php?id_user=$id';
 
     final response = await http.delete(Uri.parse(url), body: {
       'id_user': id.toString(),

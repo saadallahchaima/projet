@@ -4,6 +4,7 @@ import 'Listetest.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
 
+import 'Screens/pageuser.dart';
 import 'entry_point.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
 
           debugShowCheckedModeBanner: false,
 
-          home: EntryPoint(),
+          home: ListTest(),
           routes: {
-            Bg.routeName: (context) => Bg(),
-            WelcomeScreen.routeName: (context) => WelcomeScreen(),
-            SignupScreen.routeName: (context) => SignupScreen(),
-            LoginScreen.routeName: (context) => LoginScreen(),
-           EntryPoint.routeName: (context) => EntryPoint(),
+         //   Bg.routeName: (context) => Bg(),
+           // WelcomeScreen.routeName: (context) => WelcomeScreen(),
+          //  SignupScreen.routeName: (context) => SignupScreen(),
+          //  LoginScreen.routeName: (context) => LoginScreen(),
+         //  EntryPoint.routeName: (context) => EntryPoint(),
           },
         );
       },
