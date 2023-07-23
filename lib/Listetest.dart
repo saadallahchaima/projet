@@ -209,26 +209,54 @@ class _ListTestState extends State<ListTest> {
                                   errorText: 'Veuillez sélectionner la date de consommation'),
                             ),
                             SizedBox(height: 16.0),
-                            ElevatedButton(
-                              onPressed: () {
-                                if (widget._formKey.currentState!
-                                    .saveAndValidate()) {
+                            GestureDetector(
+                              onTap: () {
+                                if (widget._formKey.currentState!.saveAndValidate()) {
                                   // Access the form data using widget._formKey.currentState!.value
                                   // For example, to access the brand name: widget._formKey.currentState!.value['carBrand']?.name
                                   print('Car consumption details saved!');
-                                  print('Brand: ${widget._carConsumption.value
-                                      .brand?.name}');
-                                  print('Mileage: ${widget._carConsumption.value
-                                      .mileage}');
-                                  print(
-                                      'Fuel Type: ${widget._carConsumption.value
-                                          .fuelType}');
-                                  print('Consumption Date: ${widget
-                                      ._carConsumption.value.consumptionDate}');
+                                  print('Brand: ${widget._carConsumption.value.brand?.name}');
+                                  print('Mileage: ${widget._carConsumption.value.mileage}');
+                                  print('Fuel Type: ${widget._carConsumption.value.fuelType}');
+                                  print('Consumption Date: ${widget._carConsumption.value.consumptionDate}');
                                 }
                               },
-                              child: Text('Enregistrer'),
+                              child: Container(
+                                width: 220,
+                                height: 64.32,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                clipBehavior: Clip.antiAlias,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFF136AF3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7.98),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Enregistrer',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 22.35,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.white,
+                                      size: 28,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
+
                           ],
                         ),
                       ),
