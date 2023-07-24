@@ -1,17 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flare_flutter/flare_actor.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:projet/Screens/select_photo_options_screen.dart';
 import '../models/mysql.dart';
 import 'login_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_sequence_animation/flutter_sequence_animation.dart';
-import 'package:flutter/animation.dart';
+
 
 class SignupScreen extends StatefulWidget {
   static const routeName = '/signup-screen';
@@ -48,7 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState!.validate()) {
       // Le formulaire est valide, vous pouvez envoyer les données
       String uri = "";
-      var response = await http.post(Uri.parse("http:// 192.168.1.15/projet_api/insertdata.php"), body: {
+      var response = await http.post(Uri.parse("http://192.168.137.163/projet_api/insertdata.php"), body: {
         "nom": UserNameController.text,
         "email": emailController.text,
         "phone": UserPhoneController.text,
@@ -68,9 +63,28 @@ class _SignupScreenState extends State<SignupScreen> {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data["status"] == "error") {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.ERROR,
+            animType: AnimType.TOPSLIDE,
+            showCloseIcon: true,
+            title: "error",
+            desc: "error",
+
+            btnCancelOnPress: (){}
+          ).show();
 print("yekhdemch");
         } else if (data["status"] == "success") {
-print("yekhdem");
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.SUCCES,
+            animType: AnimType.TOPSLIDE,
+            showCloseIcon: true,
+            title: "Saved",
+            desc: "Saved",
+            btnOkOnPress: () {},
+          ).show();
+           print("yekhdem");
         }
       } else {
         // Erreur de la requête
@@ -93,7 +107,7 @@ print("yekhdem");
           Icon(icon, size: 24),
           TextButton(
             onPressed: () => Navigator.of(context).pushNamed(LoginScreen.routeName),
-            child: Text('Sign in'),
+            child: const Text('Sign in'),
           ),
         ],
       ),
@@ -109,7 +123,7 @@ print("yekhdem");
       ) {
     return Container(
       height: 55,
-      margin: EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
         color: Colors.blueGrey.shade200,
         borderRadius: BorderRadius.circular(30),
@@ -124,7 +138,7 @@ print("yekhdem");
           autofocus: false,
           decoration: InputDecoration(
             hintText: hintTitle,
-            hintStyle: TextStyle(
+            hintStyle: const TextStyle(
               fontSize: 18,
               color: Colors.white70,
               fontStyle: FontStyle.italic,
@@ -147,10 +161,14 @@ print("yekhdem");
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+        Expanded(
+
+        child: SingleChildScrollView(
+
+        child: Container(
               height: 700,
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15),
@@ -159,7 +177,7 @@ print("yekhdem");
               ),
               child: ListView(
                 children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.all(28.0),
                     child: Center(
@@ -198,7 +216,7 @@ print("yekhdem");
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 45),
+                        const SizedBox(height: 45),
                         Form(
                           key: _formKey,
                           child: Column(
@@ -237,6 +255,16 @@ print("yekhdem");
                                     return 'Please enter your email';
                                   }
                                   if (!emailRegExp.hasMatch(value)) {
+                                    AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.INFO,
+                                    animType: AnimType.TOPSLIDE,
+                                    showCloseIcon: true,
+                                    title: "Invalid email",
+                                    desc: "Invalid email",
+                                    btnOkOnPress: () {},
+                                  ).show();
+
                                     return 'Invalid email';
                                   }
                                   return null; // La validation a réussi
@@ -250,6 +278,7 @@ print("yekhdem");
 
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
+
                                     return 'Please enter your password';
                                   }
 
@@ -286,9 +315,18 @@ print("yekhdem");
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 senddata();
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.SUCCES,
+                                  animType: AnimType.TOPSLIDE,
+                                  showCloseIcon: true,
+                                  title: "Saved",
+                                  desc: "Saved",
+                                  btnOkOnPress: () {},
+                                ).show();
                                 // Action à effectuer lors du clic sur le bouton
                               }},
-                            child: Text(
+                            child: const Text(
                               'Sign up',
                               style: TextStyle(
                                 fontSize: 20,
@@ -298,7 +336,7 @@ print("yekhdem");
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.only(top: 25.0),
                           child: Row(
@@ -308,13 +346,15 @@ print("yekhdem");
                             ],
                           ),
                         ),
-                        Divider(thickness: 0, color: Colors.white),
+                        const Divider(thickness: 0, color: Colors.white),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
+      ),
+        ),
           ],
         ),
       ),

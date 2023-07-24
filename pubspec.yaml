@@ -53,6 +53,7 @@ dependencies:
   cached_network_image: ^3.2.3
   form_builder_validators: ^9.0.0
   awesome_dialog: ^2.2.1
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:

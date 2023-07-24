@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -21,7 +22,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final String apiUrl = 'http://192.168.1.156/projet_api/user.php';
+  final String apiUrl = 'http://192.168.137.163/projet_api/user.php';
   List<User> users = [];
 
   Future<List<User>> getUsers() async {
@@ -52,7 +53,7 @@ class _BodyState extends State<Body> {
 
     print('Deleting user with ID: $id');
 
-    final url = 'http://192.168.1.156/projet_api/delete_user.php?id_user=$id';
+    final url = 'http://192.168.137.163/projet_api/delete_user.php?id_user=$id';
 
     final response = await http.delete(Uri.parse(url), body: {
       'id_user': id.toString(),
@@ -241,7 +242,16 @@ class _BodyState extends State<Body> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () {
-                                                      deleteUser(user.id); // Call deleteUser to perform the deletion
+                                                      deleteUser(user.id);
+                                                      AwesomeDialog(
+                                                        context: context,
+                                                        dialogType: DialogType.SUCCES,
+                                                        animType: AnimType.TOPSLIDE,
+                                                        showCloseIcon: true,
+                                                        title: "deleted",
+                                                        desc: "deleted",
+                                                        btnOkOnPress: () {},
+                                                      ).show();// Call deleteUser to perform the deletion
                                                       Navigator.of(ctx).pop();
                                                     },
                                                     child: const Text('Supprimer'),

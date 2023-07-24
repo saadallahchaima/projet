@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../entry_point.dart';
 import 'WelcomScreen.dart';
+import 'ajouter_info.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    var url = Uri.parse("http://192.168.1.156/projet_api/test.php");
+    var url = Uri.parse("http://192.168.137.163/projet_api/test.php");
     var response = await http.post(
       url,
       body: {
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (role == 'admin') {
         Navigator.pushNamed(context, EntryPoint.routeName);
       } else if (role == 'user') {
-        Navigator.pushNamed(context, WelcomeScreen.routeName);
+        Navigator.pushNamed(context, ListTest.routeName);
       } else {
         showDialog(
           context: context,

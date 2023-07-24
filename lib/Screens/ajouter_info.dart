@@ -6,6 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CarBrand {
   String name;
@@ -26,6 +27,7 @@ class CarBrand {
 
 class Voiture {
   int? id;
+  int? id_user;
   CarBrand? marque;
   String? Modele;
   double? Kilometrage;
@@ -33,6 +35,8 @@ class Voiture {
   DateTime? consumptionDate;
   Voiture({
     this.id,
+    this.id_user, // Add this field
+
     this.marque,
     this.Modele,
     this.Kilometrage,
@@ -44,6 +48,8 @@ class Voiture {
 
 
 class ListTest extends StatefulWidget {
+  static const routeName = '/ajouter_info-screen';
+
   final List<CarBrand> carBrands = [
     CarBrand(name: 'Volvo', imageUrl: 'https://www.volvocars.com/images/v/-/media/market-assets/switzerland/applications/local-pages/blog/update-mai/volvo_logo_1920x1440.jpg?iar=0&w=720'),
     CarBrand(name: 'Toyota', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Toyota_EU.svg/langfr-1280px-Toyota_EU.svg.png'),
@@ -77,7 +83,10 @@ class _ListTestState extends State<ListTest> {
   Color gradientSecond = const Color(0xFF6985e8);
   Color secondPageTitleColor = const Color(0xFFfefeff);
   Color circuitsColor = const Color(0xFF2f2f51);
-
+  Future<int?> getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('user_id');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,7 +261,9 @@ class _ListTestState extends State<ListTest> {
                                 },
                                 validator: FormBuilderValidators.required(
                                     errorText: 'Veuillez sélectionner le type de carburant'),
+
                               ),
+
                               const SizedBox(height: 16.0),
                               FormBuilderDateTimePicker(
                                 name: 'consumptionDate',
@@ -268,13 +279,16 @@ class _ListTestState extends State<ListTest> {
                                 },
                                 validator: FormBuilderValidators.required(
                                     errorText: 'Veuillez sélectionner la date de consommation'),
+
                               ),
+
                               const SizedBox(height: 16.0),
                               GestureDetector(
                                 onTap: () async {
                                   if (widget._formKey.currentState!.saveAndValidate()) {
                                     // Convert the form data to a JSON map
                                     Map<String, dynamic> formData = {
+
                                       'marque': widget._carConsumption.value.marque?.toJson(),
                                       'Modele': widget._carConsumption.value.Modele,
                                       'Kilometrage': widget._carConsumption.value.Kilometrage,
@@ -282,9 +296,9 @@ class _ListTestState extends State<ListTest> {
                                       'consumptionDate': widget._carConsumption.value.consumptionDate?.toIso8601String(),
                                     };
                                     String jsonData = jsonEncode(formData);
-
+                                    int? userId = await getUserId();
                                     // Envoyer les données au serveur PHP
-                                    var url = 'http://192.168.1.15/projet_api/ajouter_infos.php'; // Remove the space before the IP address
+                                    var url = 'http://192.168.137.163/projet_api/ajouter_infos.php'; // Remove the space before the IP address
                                     var headers = {
                                       'Content-Type': 'application/json'
                                     };
