@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:projet/models/User.dart';
 import 'package:sizer/sizer.dart';
 import 'Screens/Afficher_Infos.dart';
+
 import 'Screens/ajouter_info.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
@@ -23,20 +25,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
-        return MaterialApp(
+        return GetMaterialApp(
 
           debugShowCheckedModeBanner: false,
+        initialRoute: Bg.routeName,
 
-          home: Bg(),
           routes: {
           Bg.routeName: (context) => Bg(),
-       WelcomeScreen.routeName: (context) => WelcomeScreen(),
-       SignupScreen.routeName: (context) => SignupScreen(),
+      WelcomeScreen.routeName: (context) => WelcomeScreen(),
+      SignupScreen.routeName: (context) => SignupScreen(),
        LoginScreen.routeName: (context) => LoginScreen(),
-        EntryPoint.routeName: (context) => EntryPoint(),
-        ListTest.routeName: (context) => ListTest(),
+     EntryPoint.routeName: (context) => EntryPoint(),
+           ListTest.routeName: (context) => ListTest(),
 
           },
+          home: Bg(),
         );
       },
     );

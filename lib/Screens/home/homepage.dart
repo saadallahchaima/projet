@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../UserListPage.dart';
+import '../../listVoiture.dart';
 import '/Screens/page_user.dart';
 
 
@@ -30,6 +31,7 @@ class HomeScreen extends StatelessWidget {
           // Autres routes...
           '/user-screen': (context) => page_utilisateur(),
         '/serviceuser-screen' :  (context) => page_utilisateur(),
+        '/cars-screen' :  (context) => Cars(),
       },
     );
   }
@@ -121,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     CupertinoIcons.car,
                     Colors.purple,
                         () {
-                      Navigator.of(context).pushNamed(page_utilisateur.routeName);
+                      Navigator.of(context).pushNamed(Cars.routeName);
                     },
                   ),
                   itemDashboard(

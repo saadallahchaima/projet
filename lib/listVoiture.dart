@@ -1,82 +1,77 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:projet/models/User.dart';
 import 'dart:convert';
-
+import '../models/Cars.dart';
 import '../constants.dart';
-import '../models/User.dart';
-import '../update_user.dart';
-
-import '../Profile.dart';
 import '../components/search_box.dart';
+import 'Screens/DetailesCars.dart';
+import 'models/fuelClass.dart';
 
-class Body extends StatefulWidget {
-  final int index;
+class Cars extends StatefulWidget {
+  static const routeName = '/cars-screen';
 
-  const Body({Key? key, required this.index}) : super(key: key);
-
-  static const routeName = '/serviceuser-screen';
+  const Cars({super.key});
 
   @override
-  _BodyState createState() => _BodyState();
+  State<Cars> createState() => _CarsState();
 }
 
-class _BodyState extends State<Body> {
-  final String apiUrl = 'http://192.168.1.16/projet_api/user.php';
-  List<User> users = [];
+class _CarsState extends State<Cars> {
+  final String apiUrl = 'http://192.168.1.16/projet_api/consommation.php';
+  List<Voiture> cars = [];
 
-  Future<List<User>> getUsers() async {
+  Future<List<Voiture>> getCars() async {
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((data) {
-        return User(
-          id: data['id_user'] != null ? int.parse(data['id_user'].toString()) : null,
-          nom: data['nom'].toString(),
-          email: data['email'].toString(),
-          password: data['password'].toString(),
-          phone: data['phone'].toString(),
-          cin: data['cin'].toString(),
+        // Fetch the User data using id_user
+        User user = User(
+          id: data['user']['id_user'] != null ? int.parse(data['user']['id_user'].toString()) : 0,
+          nom: data['user']['nom']?.toString() ?? '',
+          email: data['user']['email']?.toString() ?? '',
+          password: data['user']['password']?.toString() ?? '',
+          phone: data['user']['phone']?.toString() ?? '',
+          cin: data['user']['cin']?.toString() ?? '',
+        );
+
+        // Fetch fuel fill-ups data
+        List<FuelFillup> fuelFillups = [];
+        if (data['fuel'] != null) {
+          fuelFillups = List.from(data['fuel']).map((fuelData) {
+            return FuelFillup(
+              id: int.parse(fuelData['id_fuel'].toString()),
+              date: DateTime.parse(fuelData['date'].toString()),
+              numberOfLiters: double.parse(fuelData['nombre_litres'].toString()),
+            );
+          }).toList();
+        }
+
+        // Create the Car object with the associated User object and fuel fill-ups
+        return Voiture(
+          id_v: data['id_v'].toString(),
+          user: user, // Use the User object here
+          marque: data['marque'].toString(),
+          model: data['Modele'].toString(),
+          type_c: data['type_c'].toString(),
+          kilometrage: data['Kilometrage'].toString(),
+          fuelFillups: fuelFillups,
         );
       }).toList();
     } else {
-      throw Exception('Erreur lors de la récupération des utilisateurs');
+      throw Exception('Erreur lors de la récupération des Voitures');
     }
   }
 
-  Future<void> deleteUser(int? id) async {
-    if (id == null) {
-      // If the id is null, return without performing the delete operation
-      return;
-    }
-
-    print('Deleting user with ID: $id');
-
-    final url = 'http://192.168.1.16/projet_api/delete_user.php?id_user=$id';
-
-    final response = await http.delete(Uri.parse(url), body: {
-      'id_user': id.toString(),
-    });
-
-    if (response.statusCode == 200) {
-      print('User with ID $id deleted successfully');
-      setState(() {
-        // Update the users list after deletion
-        users = users.where((user) => user.id != id).toList();
-      });
-    } else {
-      print('Error deleting user with ID $id');
-      throw Exception('Erreur lors de la suppression de l\'utilisateur');
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    getUsers().then((data) {
+    getCars().then((data) {
       setState(() {
-        users = data;
+        cars = data;
       });
     });
   }
@@ -104,16 +99,19 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
-                FutureBuilder<List<User>>(
-                  future: getUsers(),
+                FutureBuilder<List<Voiture>>(
+                  future: getCars(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          final user = snapshot.data![index];
+                          final car = snapshot.data![index]; // Change 'Voiture' to 'car'
+                          print("Nom de l'utilisateur associé: ${car.user.nom}");
 
-                          print('User ID: ${user.id}');
+                          print('Voiture ID: ${car.id_v}');
+
+
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               horizontal: kDefaultPadding,
@@ -121,6 +119,14 @@ class _BodyState extends State<Body> {
                             ),
                             height: 160,
                             child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailCars(car: car),
+                                  ),
+                                );
+                              },
                               child: Stack(
                                 alignment: Alignment.bottomCenter,
                                 children: <Widget>[
@@ -147,19 +153,29 @@ class _BodyState extends State<Body> {
                                           children: <Widget>[
                                             const Spacer(),
                                             Padding(
+
                                               padding: const EdgeInsets.symmetric(horizontal: 20),
                                               child: Text(
-                                                "Nom: ${user.nom}",
+                                                "Marque: ${car.marque}",
                                                 style: Theme.of(context).textTheme.titleLarge,
                                               ),
                                             ),
+                                           // Padding(
+                                            //  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            //  child: Text(
+                                            //    "Modele: ${car.model}",
+                                            //    style: Theme.of(context).textTheme.bodyMedium,
+                                            //  ),
+                                           // ),
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20),
                                               child: Text(
-                                                "Email: ${user.email}",
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                " User: ${car.user.nom}",
+                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                softWrap: false, // Empêche le texte de se retourner automatiquement
                                               ),
                                             ),
+
                                             const Spacer(),
                                             Container(
                                               padding: const EdgeInsets.symmetric(
@@ -174,7 +190,7 @@ class _BodyState extends State<Body> {
                                                 ),
                                               ),
                                               child: Text(
-                                                "Numero de carte: ${user.cin}",
+                                                " Carburants: ${car.type_c}",
                                                 style: Theme.of(context).textTheme.bodyMedium,
                                               ),
                                             ),
@@ -185,9 +201,9 @@ class _BodyState extends State<Body> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                                         height: 110,
-                                        width: 150,
+                                        width: 210,
                                         child: Image.asset(
-                                          "images/profile.png",
+                                          "images/hun.jpeg",
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -198,70 +214,9 @@ class _BodyState extends State<Body> {
                                     right: 0,
                                     child: Row(
                                       children: <Widget>[
-                                        IconButton(
-                                          icon: const Icon(Icons.remove_red_eye_sharp),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => ProfileScreen(user: user),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.edit),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => UpdateRecord(
-                                                  user.nom,
-                                                  user.email,
-                                                  user.phone,
-                                                  user.cin,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (ctx) => AlertDialog(
-                                                title: const Text('Supprimer l\'utilisateur'),
-                                                content: const Text('Êtes-vous sûr de vouloir supprimer cet utilisateur ?'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(ctx).pop();
-                                                    },
-                                                    child: const Text('Annuler'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      deleteUser(user.id);
-                                                      AwesomeDialog(
-                                                        context: context,
-                                                        dialogType: DialogType.SUCCES,
-                                                        animType: AnimType.TOPSLIDE,
-                                                        showCloseIcon: true,
-                                                        title: "deleted",
-                                                        desc: "deleted",
-                                                        btnOkOnPress: () {},
-                                                      ).show();// Call deleteUser to perform the deletion
-                                                      Navigator.of(ctx).pop();
-                                                    },
-                                                    child: const Text('Supprimer'),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
+
                                       ],
+
                                     ),
                                   ),
                                 ],
@@ -271,7 +226,7 @@ class _BodyState extends State<Body> {
                         },
                       );
                     } else if (snapshot.hasError) {
-                      return Text('Erreur lors de la récupération des utilisateurs');
+                      return Text('Erreur lors de la récupération des voitures');
                     } else {
                       return Center(child: CircularProgressIndicator());
                     }

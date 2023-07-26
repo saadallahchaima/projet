@@ -54,6 +54,8 @@ dependencies:
   form_builder_validators: ^9.0.0
   awesome_dialog: ^2.2.1
   shared_preferences: ^2.2.0
+  flutter_session_manager: ^1.0.3
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +100,9 @@ flutter:
       - assets/icons/notification.svg
       - images/profile.png
       - images/hun.jpeg
+      - assets/images/
+      - assets/logos/
+      - assets/icons/
 
 
   #   - images/a_dot_ham.jpeg

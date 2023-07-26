@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-import 'WelcomScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'WelcomScreen.dart';
+import 'ajouter_info.dart';
+import 'login_screen.dart';
 class Bg extends StatefulWidget {
   static const routeName = '/splash-screen';
 
@@ -11,6 +15,7 @@ class Bg extends StatefulWidget {
 }
 
 class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
+  String? finalEmail;
 
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;
@@ -21,29 +26,30 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 4),
+      duration: const Duration(seconds: 4),
     );
 
     _rotationAnimation = Tween<double>(begin: 0, end: 2 * pi).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Interval(0, 0.5, curve: Curves.easeInOut),
+        curve: const Interval(0, 0.5, curve: Curves.easeInOut),
       ),
     );
 
     _scaleAnimation = Tween<double>(begin: 1, end: 0.5).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Interval(0.5, 0.75, curve: Curves.easeInOut),
+        curve: const Interval(0.5, 0.75, curve: Curves.easeInOut),
       ),
     );
 
     _textOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: Interval(0.75, 1.0, curve: Curves.easeInOut),
+        curve: const Interval(0.75, 1.0, curve: Curves.easeInOut),
       ),
     );
 
@@ -109,7 +115,7 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
               animation: _scaleAnimation,
               builder: (context, child) {
                 return _shapeAnimationCompleted
-                    ? SizedBox.shrink() // Make the shape disappear when completed
+                    ? const SizedBox.shrink() // Make the shape disappear when completed
                     : Transform.scale(
                   scale: _scaleAnimation.value,
                   child: child,
@@ -119,7 +125,7 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
                 width: 200,
                 height: 200,
                 decoration: ShapeDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment(-0.7, -0.71),
                     end: Alignment(0.7, 0.71),
                     colors: [
@@ -140,11 +146,11 @@ class _BgState extends State<Bg> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-          SizedBox(height: 30), // Add some spacing between the shape and the text
+          const SizedBox(height: 30), // Add some spacing between the shape and the text
           AnimatedOpacity(
             opacity: _shapeAnimationCompleted ? _textOpacityAnimation.value : 0.0,
-            duration: Duration(milliseconds: 500),
-            child: Text(
+            duration: const Duration(milliseconds: 500),
+            child: const Text(
               'Drivo',
               style: TextStyle(
                 color: Colors.white,

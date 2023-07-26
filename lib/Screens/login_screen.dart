@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../entry_point.dart';
 import 'WelcomScreen.dart';
@@ -21,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isObscurePassword = true;
+  late final String? finalEmail; // Make it nullable
 
   Widget login(IconData icon) {
     return Container(
@@ -64,11 +67,22 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  Future<void> getValidationData() async {
+    final SharedPreferences sharedPreferences =
+    await SharedPreferences.getInstance();
+    final obtainedEmail = sharedPreferences.getString('email');
+    setState(() {
+      finalEmail = obtainedEmail;
+    });
+    print(finalEmail);
+  }
   Future<void> _login() async {
     String email = emailController.text;
-    String password = passwordController.text;
+  String password = passwordController.text;
 
-    var url = Uri.parse("http://192.168.137.163/projet_api/test.php");
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+sharedPreferences.setString('email',emailController.text);
+    var url = Uri.parse("http://192.168.1.16/projet_api/test.php");
     var response = await http.post(
       url,
       body: {
@@ -81,9 +95,9 @@ class _LoginScreenState extends State<LoginScreen> {
       var responseData = json.decode(response.body);
       var role = responseData['role'];
       if (role == 'admin') {
-        Navigator.pushNamed(context, EntryPoint.routeName);
+        Get.toNamed(EntryPoint.routeName);
       } else if (role == 'user') {
-        Navigator.pushNamed(context, ListTest.routeName);
+        Get.toNamed(ListTest.routeName);
       } else {
         showDialog(
           context: context,
@@ -124,9 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
-
-
   }
+
 
   Widget userInput(TextEditingController userInput, String hintTitle, TextInputType keyboardType) {
     return Container(

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:projet/constants.dart';
 import '../models/mysql.dart';
 import 'login_screen.dart';
 import 'package:http/http.dart' as http;
@@ -43,54 +45,38 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState!.validate()) {
       // Le formulaire est valide, vous pouvez envoyer les données
       String uri = "";
-      var response = await http.post(Uri.parse("http://192.168.137.163/projet_api/insertdata.php"), body: {
+      var response = await http.post(Uri.parse("http://192.168.1.16/projet_api/insertdata.php"), body: {
         "nom": UserNameController.text,
         "email": emailController.text,
         "phone": UserPhoneController.text,
         "password": passwordConfirmController.text,
         "cin": cartecinController.text,
       });
+var data = json.decode(response.body);
+if(data == "Error"){
+  Fluttertoast.showToast(msg: "this User Already exist!");
+  toastLength: Toast.LENGTH_SHORT;
+  gravity: ToastGravity.CENTER;
+  timeInSecForIosWeb: 1;
+  backgroundColor: Colors.red;
+  textColor: Colors.white;
+  fontSize: 16.0;
 
-      if (response.statusCode == 200) {
-        // Succès de la requête
-        print("Response: ${response.body}");
-      } else {
-        // Erreur de la requête
-        print("Error: ${response.statusCode}");
-      }
-      var data = json.decode(response.body);
+}else{
+  Fluttertoast.showToast(msg: "Registraition successsful!");
+  toastLength: Toast.LENGTH_SHORT;
+  gravity: ToastGravity.CENTER;
+  timeInSecForIosWeb: 1;
+  backgroundColor: Colors.green;
+  textColor: Colors.white;
+  fontSize: 16.0;
+  print('Response data: ${response.body}');
 
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        if (data["status"] == "error") {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.ERROR,
-            animType: AnimType.TOPSLIDE,
-            showCloseIcon: true,
-            title: "error",
-            desc: "error",
-
-            btnCancelOnPress: (){}
-          ).show();
-print("yekhdemch");
-        } else if (data["status"] == "success") {
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            animType: AnimType.TOPSLIDE,
-            showCloseIcon: true,
-            title: "Saved",
-            desc: "Saved",
-            btnOkOnPress: () {},
-          ).show();
-           print("yekhdem");
-        }
-      } else {
-        // Erreur de la requête
-        print("Error: ${response.statusCode}");
-      }
+}
     }
+
+
+
   }
 
   Widget signUpWith(BuildContext context, IconData icon) {
@@ -309,8 +295,7 @@ print("yekhdemch");
                           padding: const EdgeInsets.only(top: 5, left: 70, right: 70),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              primary: Colors.indigo.shade800,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), backgroundColor: Colors.indigo.shade800,
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
