@@ -28,7 +28,7 @@ class WelcomeScreen extends StatelessWidget {
                   SizedBox(height: 20), // Espacement vertical
 
                   Image.network(
-                    'https://img.freepik.com/vecteurs-libre/illustration-isometrique-du-service-partage-voiture_1284-31041.jpg?w=740&t=st=1688510945~exp=1688511545~hmac=512ca5d8f53cca86057675fb41b3e7c30d2f05791fde6f420dfcf7b46464b831',
+                    'http://192.168.1.11/welcome_image.avif',
                     width: 400,
                     height: 400,
                     fit: BoxFit.cover,

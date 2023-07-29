@@ -5,67 +5,99 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:projet/Screens/SplashScreen.dart';
-import 'package:projet/Screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CarBrand {
-  String name;
-  String imageUrl;
+import '../models/User.dart';
 
-  CarBrand({
-    required this.name,
-    required this.imageUrl,
+class Carte {
+  int? id_carte;
+  int? num_carte;
+  String? kiosque;
+  double? plafon;
+  DateTime? date_creation;
+
+  Carte({
+    this.id_carte,
+    this.num_carte,
+    this.kiosque,
+    this.plafon,
+    this.date_creation,
   });
+
+  factory Carte.fromJson(Map<String, dynamic> json) {
+    return Carte(
+      id_carte: json['id_carte'],
+      num_carte: json['num_carte'],
+      kiosque: json['kiosque'],
+      plafon: json['plafon'],
+      date_creation: json['date_creation'] != null
+          ? DateTime.parse(json['date_creation'])
+          : null,    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'imageUrl': imageUrl,
+      'id_carte': id_carte,
+      'num_carte': num_carte,
+      'kiosque': kiosque,
+      'plafon': plafon,
+      'date_creation': date_creation?.toIso8601String(),
     };
+
+  }
+  @override
+  String toString() {
+    return 'Carte(id_carte: $id_carte, num_carte: $num_carte, kiosque: $kiosque, plafon: $plafon, date_creation: $date_creation)';
   }
 }
 
-class Voiture {
-  int? id;
-  int? id_user;
-  CarBrand? marque;
-  String? Modele;
-  double? Kilometrage;
-  String? type_c;
-  DateTime? consumptionDate;
-  Voiture({
-    this.id,
-    this.id_user,
-    this.marque,
-    this.Modele,
-    this.Kilometrage,
-    this.type_c,
+class Carburant {
+  int? id_c;
+  double? nb_litres;
+  Carte? carte;
+  double? montant;
+  double? rest;
+  DateTime? date;
+  User? user;
+
+  Carburant({
+    this.id_c,
+    this.nb_litres,
+    this.carte,
+    this.montant,
+    this.rest,
+    this.date,
+    this.user,
   });
 
+  void calculateRest() {
+    print("Carte: ${carte?.toJson()}");
+    print("Montant: $montant");
+    print("Plafon: ${carte?.plafon}");
+
+
+    if (carte != null && montant != null && carte!.plafon != null) {
+      rest = carte!.plafon! - montant!;
+    } else {
+      rest = null;
+    }
+
+    print("Plafon after update: ${carte?.plafon}");
+    print("Rest: $rest");
+  }
 }
 
-class ListTest extends StatefulWidget {
-  ListTest({Key? key, String? finalEmail}) : super(key: key);
-  late String finalEmail;
+  class ListTest extends StatefulWidget {
+  ListTest({Key? key}) : super(key: key);
 
   static const routeName = '/ajouter_info-screen';
 
-  final List<CarBrand> carBrands = [
-    CarBrand(name: 'Volvo', imageUrl: 'https://www.volvocars.com/images/v/-/media/market-assets/switzerland/applications/local-pages/blog/update-mai/volvo_logo_1920x1440.jpg?iar=0&w=720'),
-    CarBrand(name: 'Toyota', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Toyota_EU.svg/langfr-1280px-Toyota_EU.svg.png'),
-    CarBrand(name: 'Honda', imageUrl: 'https://www.1min30.com/wp-content/uploads/2017/09/Honda-logo-500x154.jpg'),
-    CarBrand(name: 'Ford', imageUrl: 'https://www.carlogos.org/car-logos/ford-logo-2017-640.png'),
-    CarBrand(name: 'Hyundai', imageUrl: 'https://www.1min30.com/wp-content/uploads/2019/02/Embl%C3%A8me-Hyundai-500x281.jpg'),
-  ];
-
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final ValueNotifier<Voiture> _carConsumption = ValueNotifier<Voiture>(Voiture());
-  final List<Voiture> voitures = [];
-
+  final ValueNotifier<Carburant> _carConsumption = ValueNotifier<Carburant>(Carburant());
+  final List<Carburant> voitures = [];
+  double calculatedRest = 0;
 
   @override
   State<ListTest> createState() => _ListTestState();
@@ -76,27 +108,14 @@ class _ListTestState extends State<ListTest> {
   Color gradientSecond = const Color(0xFF6985e8);
   Color secondPageTitleColor = const Color(0xFFfefeff);
   Color circuitsColor = const Color(0xFF2f2f51);
+
   @override
   void initState() {
     super.initState();
-    _loadUserId();
+    widget._carConsumption.value.carte =
+        Carte(); // Correction de l'initialisation de _carConsumption.value.carte
   }
 
-  Future<void> _loadUserId() async {
-    int? userId = await getUserId();
-    if (userId != null) {
-      print('Logged-in user ID: $userId');
-      // ... Your logic here ...
-    } else {
-      print('No user logged in.');
-      // ... Your logic here ...
-    }
-  }
-
-  Future<int?> getUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('id_user');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +138,10 @@ class _ListTestState extends State<ListTest> {
             children: [
               Container(
                 padding: const EdgeInsets.only(top: 70, left: 30, right: 30),
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 200,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,8 +165,8 @@ class _ListTestState extends State<ListTest> {
                     Text(
                       "Car Consumption App",
                       style: TextStyle(
-                        fontSize: 20, // Increase the font size here
-                        fontWeight: FontWeight.bold, // Use a bolder font weight
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: secondPageTitleColor,
                       ),
                     ),
@@ -157,13 +179,13 @@ class _ListTestState extends State<ListTest> {
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(70)),
-                      //Radius.circular(50)),
+                        topRight: Radius.circular(70),
+                      ),
                     ),
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 140, // Increase this value to add more white space
+                          height: 140,
                         ),
                         Row(
                           children: [
@@ -185,78 +207,114 @@ class _ListTestState extends State<ListTest> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                FormBuilderDropdown<CarBrand>(
-                                  name: 'marque',
-                                  decoration: const InputDecoration(labelText: 'Marque de voiture'),
-                                  items: widget.carBrands.map((brand) => DropdownMenuItem<CarBrand>(
-                                    value: brand,
-                                    child: Row(
-                                      children: [
-                                        Image.network(
-                                          brand.imageUrl,
-                                          width: 50,
-                                          height: 50,
-                                          loadingBuilder: (context, child, loadingProgress) {
-                                            if (loadingProgress == null) return child;
-                                            return const CircularProgressIndicator();
-                                          },
-                                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(brand.name),
-                                      ],
-                                    ),
-                                  )).toList(),
-                                  onChanged: (CarBrand? value) {
+                                FormBuilderTextField(
+                                  name: 'carte[num_carte]',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Numéro de carte',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) async {
                                     setState(() {
-                                      widget._carConsumption.value.marque = value;
+                                      int? numCarte = int.tryParse(value ?? '');
+                                      double? plafon = double.tryParse(value ?? '');
+
+
+                                      widget._carConsumption.value.carte = Carte(num_carte: numCarte,plafon: plafon);
                                     });
+
+                                    // Fetch the plafon from the API based on the entered num_carte
+                                    int? numCarte = int.tryParse(value ?? '');
+                                    if (numCarte != null) {
+                                      await fetchPlafonFromAPI(numCarte);
+                                    }
                                   },
-                                  validator: FormBuilderValidators.required(errorText: 'Veuillez sélectionner une marque de voiture'),
                                 ),
+
+
                                 const SizedBox(height: 16.0),
                                 FormBuilderTextField(
-                                  name: 'Kilometrage',
+                                  name: 'user[nom]',
                                   decoration: const InputDecoration(
-                                    labelText: 'Kilometrage',
+                                    labelText: 'user name',
+                                  ),
+                                  keyboardType: TextInputType.text,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      widget._carConsumption.value.user = User(
+                                          nom: value ?? "",
+                                          email: '',
+                                          password: '',
+                                          phone: '',
+                                          cin: '');
+                                    });
+                                  },
+                                  validator: FormBuilderValidators.required(
+                                      errorText: 'Veuillez entrer votre nom'),
+                                ),
+                                FormBuilderTextField(
+                                  name: 'Nombre de Litre',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Nombre de litre',
                                   ),
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     setState(() {
-                                      widget._carConsumption.value.Kilometrage = double.tryParse(value!) ?? 0;
-                                    });
-                                  },
-                                  validator: FormBuilderValidators.required(errorText: 'Veuillez entrer le kilométrage de votre voiture'),
-                                ),
-                                const SizedBox(height: 16.0),
-                                FormBuilderTextField(
-                                  name: 'Modele',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Marque de votre voiture',
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget._carConsumption.value.Modele = value;
-                                    });
-                                  },
-                                  validator: FormBuilderValidators.required(errorText: 'Veuillez entrer la marque de votre voiture'),
-                                ),
-                                const SizedBox(height: 16.0),
-                                FormBuilderDropdown(
-                                  name: 'type_c',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Type de carburant',
-                                  ),
-                                  items: ['Essence', 'Gasoil'].map((type) =>
-                                      DropdownMenuItem<String>(
-                                          value: type, child: Text(type))).toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget._carConsumption.value.type_c = value.toString();
+                                      widget._carConsumption.value.nb_litres =
+                                          double.tryParse(value!) ?? 0;
                                     });
                                   },
                                   validator: FormBuilderValidators.required(
-                                      errorText: 'Veuillez sélectionner le type de carburant'),
+                                      errorText: 'nombre de litre'),
+                                ),
+                                const SizedBox(height: 16.0),
+                                FormBuilderTextField(
+                                  name: '',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Montant',
+                                  ),
+                                  keyboardType: TextInputType.number,
+
+                                  onChanged: (value) {
+                                    setState(() {
+                                      int montant = int.tryParse(value ?? '') ??
+                                          0;
+                                      widget._carConsumption.value.montant =
+                                          montant.toDouble();
+                                      widget._carConsumption.value
+                                          .calculateRest();
+                                    });
+                                  },
+
+
+                                  validator: FormBuilderValidators.required(
+                                      errorText: 'Veuillez entrer le montant'),
+                                ),
+
+                                const SizedBox(height: 16.0),
+                                Text(
+                                  widget._carConsumption.value.rest
+                                      ?.toStringAsFixed(2) ?? '0.00',
+                                  style: TextStyle(fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    // Fetch the plafon from the API based on the entered num_carte
+                                    int? numCarte = int.tryParse(
+                                        widget._formKey.currentState!
+                                            .fields['carte[num_carte]']!
+                                            .value ?? '');
+                                    if (numCarte != null) {
+                                      await fetchPlafonFromAPI(numCarte);
+                                    }
+
+                                    // Save the car consumption details
+                                    saveCarConsumptionDetails();
+                                    print(widget._carConsumption.value.rest);
+                                  },
+
+                                  child: Text('Enregistrer'),
                                 ),
                                 const SizedBox(height: 16.0),
                                 FormBuilderDateTimePicker(
@@ -268,7 +326,7 @@ class _ListTestState extends State<ListTest> {
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      widget._carConsumption.value.consumptionDate = value;
+                                      widget._carConsumption.value.date = value;
                                     });
                                   },
                                   validator: FormBuilderValidators.required(
@@ -276,27 +334,28 @@ class _ListTestState extends State<ListTest> {
                                 ),
                                 const SizedBox(height: 16.0),
                                 GestureDetector(
-                                  onTap: () async {
-                                    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                                    sharedPreferences.remove('email');
-                                    Get.to(const LoginScreen());
-                                    await saveCarConsumptionDetails();
+                                  onTap: () {
+                                    saveCarConsumptionDetails();
                                   },
                                   child: Container(
                                     width: 220,
                                     height: 64.32,
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 15),
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
                                       color: const Color(0xFF136AF3),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(7.98),
+                                        borderRadius: BorderRadius.circular(
+                                            7.98),
                                       ),
                                     ),
                                     child: const Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center,
                                       children: [
                                         Text(
                                           'Enregistrer',
@@ -334,67 +393,73 @@ class _ListTestState extends State<ListTest> {
   }
 
   Future<void> saveCarConsumptionDetails() async {
-    if (widget._formKey.currentState!.saveAndValidate()) {
-      String email = widget._formKey.currentState!.value['email'] as String;
-      String password = widget._formKey.currentState!.value['password'] as String;
-      print("User ID: ${await getUserId()}");
-      print("finalEmail: ${widget.finalEmail}");
+    widget._carConsumption.value.calculateRest();
 
+    Map<String, dynamic> formData = {
+      'id_user': {'Nom': widget._carConsumption.value.user?.nom},
+      'id_carte': {'num_carte': widget._carConsumption.value.carte?.num_carte},
+      'montant': widget._carConsumption.value.montant,
+      'rest': widget._carConsumption.value.rest,
+      'nombre_litres': widget._carConsumption.value.nb_litres,
+      'date': widget._carConsumption.value.date?.toIso8601String(),
+    };
 
-      int? userId = await getUserId();
-      Map<String, dynamic> formData = {
-        'email': email ?? '',
-        'password': password ?? '',
-        'marque': widget._carConsumption.value.marque?.toJson(),
-        'Modele': widget._carConsumption.value.Modele,
-        'Kilometrage': widget._carConsumption.value.Kilometrage,
-        'type_c': widget._carConsumption.value.type_c,
-        'consumptionDate': widget._carConsumption.value.consumptionDate?.toIso8601String(),
-      };
-      String jsonData = jsonEncode(formData);
+    print('formData: $formData');
+    String jsonData = jsonEncode(formData);
 
-      var url = 'http://192.168.1.16/projet_api/ajouter_infos.php';
-      var headers = {'Content-Type': 'application/json'};
-      var response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: jsonData,
-      );
+    final url = 'http://192.168.1.11/projet_api/fuel_calss.php';
+    final headers = {'Content-Type': 'application/json'};
 
-      if (response.statusCode == 200) {
-        print('Car consumption details saved!');
-        print('Response: ${response.body}');
-        Map<String, dynamic> responseData = jsonDecode(response.body);
-        if (responseData.containsKey("user_id")) {
-          int userId = responseData["user_id"];
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setInt('id_user', userId);
+    var response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonData,
+    );
 
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.SUCCES,
-            animType: AnimType.TOPSLIDE,
-            showCloseIcon: true,
-            title: "Saved",
-            desc: "Saved",
-            btnOkOnPress: () {},
-          ).show();
-        } else {
-          print("User ID not found in the response.");
-        }
-      } else {
-        print('Failed to save car consumption details.');
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          animType: AnimType.TOPSLIDE,
-          showCloseIcon: true,
-          title: "Error",
-          desc: "Failed to save car consumption details.",
-          btnCancelOnPress: () {},
-        ).show();
-        print('Response: ${response.body}');
-      }
+    if (response.statusCode == 200) {
+      print('Car consumption details saved!');
+      print('Response: ${response.body}');
+
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.SUCCES,
+        animType: AnimType.TOPSLIDE,
+        showCloseIcon: true,
+        title: "Saved",
+        desc: "Saved",
+        btnOkOnPress: () {},
+      ).show();
+    } else {
+      print('Failed to save car consumption details.');
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.TOPSLIDE,
+        showCloseIcon: true,
+        title: "Error",
+        desc: "Failed to save car consumption details.",
+        btnCancelOnPress: () {},
+      ).show();
+      print('Response: ${response.body}');
     }
   }
+
+  Future<void> fetchPlafonFromAPI(int numCarte) async {
+    final url = 'http://192.168.137.61/plafon.php?num_carte=$numCarte';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      double? plafon = data['plafon'];
+      print("Plafon: $plafon"); // Add this print statement
+      // Update the Carburant object with the retrieved plafon value
+      setState(() {
+        widget._carConsumption.value.carte?.plafon = plafon;
+      });
+    } else {
+      // Handle the error if the API request fails
+      print('Failed to fetch plafon from API.');
+    }
+  }
+
 }

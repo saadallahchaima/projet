@@ -15,6 +15,8 @@ void main() {
 }
 
 class HomeScreen extends StatelessWidget {
+  static const routeName ='/home_page';
+
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -27,11 +29,10 @@ class HomeScreen extends StatelessWidget {
       ),
       home: const MyHomePage(),
       routes: {
-
-          // Autres routes...
           '/user-screen': (context) => page_utilisateur(),
         '/serviceuser-screen' :  (context) => page_utilisateur(),
         '/cars-screen' :  (context) => Cars(),
+        '/home_page' :(context) => HomeScreen(),
       },
     );
   }

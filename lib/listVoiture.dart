@@ -18,8 +18,46 @@ class Cars extends StatefulWidget {
 }
 
 class _CarsState extends State<Cars> {
-  final String apiUrl = 'http://192.168.1.16/projet_api/consommation.php';
+  final String apiUrl = 'http://192.168.137.61/projet_api/consommation.php';
   List<Voiture> cars = [];
+
+  Future<List<Voiture>> chercherCar(String searchTerm) async {
+    final String url = 'http://192.168.137.61/projet_api/search.php?search=$searchTerm';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body);
+        return jsonData.map((data) {
+          List<FuelFillup> fuelFillups = [];
+          if (data['fuel'] != null) {
+            fuelFillups = List.from(data['fuel']).map((fuelData) {
+              return FuelFillup(
+                id: int.parse(fuelData['id_fuel'].toString()),
+                date: DateTime.parse(fuelData['date'].toString()),
+                numberOfLiters: double.parse(fuelData['nombre_litres'].toString()),
+                prix: double.parse(fuelData['prix'].toString()),
+              );
+            }).toList();
+          }
+          return Voiture(
+            id_v: data['id_v'].toString(),
+            marque: data['marque'].toString(),
+            model: data['Modele'].toString(),
+            type_c: data['type_c'].toString(),
+            kilometrage: data['Kilometrage'].toString(),
+            fuelFillups: fuelFillups,
+          );
+        }).toList();
+      } else {
+        throw Exception('Erreur lors de la recherche de voitures');
+      }
+    } catch (e) {
+      print('Error while fetching data: $e');
+      throw Exception('Erreur lors de la recherche de voitures');
+    }
+  }
 
   Future<List<Voiture>> getCars() async {
     final response = await http.get(Uri.parse(apiUrl));
@@ -27,15 +65,7 @@ class _CarsState extends State<Cars> {
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
       return jsonData.map((data) {
-        // Fetch the User data using id_user
-        User user = User(
-          id: data['user']['id_user'] != null ? int.parse(data['user']['id_user'].toString()) : 0,
-          nom: data['user']['nom']?.toString() ?? '',
-          email: data['user']['email']?.toString() ?? '',
-          password: data['user']['password']?.toString() ?? '',
-          phone: data['user']['phone']?.toString() ?? '',
-          cin: data['user']['cin']?.toString() ?? '',
-        );
+
 
         // Fetch fuel fill-ups data
         List<FuelFillup> fuelFillups = [];
@@ -45,6 +75,7 @@ class _CarsState extends State<Cars> {
               id: int.parse(fuelData['id_fuel'].toString()),
               date: DateTime.parse(fuelData['date'].toString()),
               numberOfLiters: double.parse(fuelData['nombre_litres'].toString()),
+              prix: double.parse(fuelData['prix'].toString()),
             );
           }).toList();
         }
@@ -52,7 +83,6 @@ class _CarsState extends State<Cars> {
         // Create the Car object with the associated User object and fuel fill-ups
         return Voiture(
           id_v: data['id_v'].toString(),
-          user: user, // Use the User object here
           marque: data['marque'].toString(),
           model: data['Modele'].toString(),
           type_c: data['type_c'].toString(),
@@ -69,6 +99,7 @@ class _CarsState extends State<Cars> {
   @override
   void initState() {
     super.initState();
+
     getCars().then((data) {
       setState(() {
         cars = data;
@@ -79,12 +110,19 @@ class _CarsState extends State<Cars> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+
       bottom: false,
       child: Column(
         children: <Widget>[
           SearchBox(
-            onChanged: (value) {},
-          ),
+            onChanged: (value) {
+              chercherCar(value).then((data) {
+               setState(() {
+               cars = data;
+                     });
+                    });
+               },
+          ), 
           const SizedBox(height: kDefaultPadding / 2),
           Expanded(
             child: Stack(
@@ -107,7 +145,7 @@ class _CarsState extends State<Cars> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           final car = snapshot.data![index]; // Change 'Voiture' to 'car'
-                          print("Nom de l'utilisateur associé: ${car.user.nom}");
+                          //print("Nom de l'utilisateur associé: ${car.user.nom}");
 
                           print('Voiture ID: ${car.id_v}');
 
@@ -170,7 +208,7 @@ class _CarsState extends State<Cars> {
                                             Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20),
                                               child: Text(
-                                                " User: ${car.user.nom}",
+                                                " Modele: ${car.model}",
                                                 style: Theme.of(context).textTheme.bodyMedium,
                                                 softWrap: false, // Empêche le texte de se retourner automatiquement
                                               ),

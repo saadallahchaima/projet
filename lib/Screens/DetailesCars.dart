@@ -16,32 +16,32 @@ class DetailCars extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: Color(0xFF092562),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            backgroundColor: Color(0xFF092562),
 
-        title: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white60,
-              size: 30,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {},
+          title: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               icon: const Icon(
-                Icons.more_horiz,
+                Icons.arrow_back,
                 color: Colors.white60,
                 size: 30,
               ),
-            )
-          ],
-        ),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.more_horiz,
+                  color: Colors.white60,
+                  size: 30,
+                ),
+              )
+            ],
+          ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -132,11 +132,15 @@ class DetailCars extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.w300,
                                 ),
-                                children: const <TextSpan>[
-                             //   Text(cars.model),
+                                children: <TextSpan>[
+                                  for (var fuelFillup in car.fuelFillups)
+                                    TextSpan(
+                                      text:  'Litres: ${fuelFillup.numberOfLiters}',
+                                    ),
                                 ],
                               ),
                             ),
+
                           ],
                         ),
                       ),
@@ -200,33 +204,32 @@ class DetailCars extends StatelessWidget {
 
                   ),
 
+
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 15, 20, 10),
                     child: Column(
                       children: [
-                        // ... Other fields ...
 
-                        // Display the list of fuel fill-ups
                         if (car.fuelFillups.isNotEmpty)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Fuel Fill-ups:",
+                                "Fuel Price:",
                                 style: TextConstants.titleSection,
                               ),
                               for (var fillup in car.fuelFillups)
                                 Row(
                                   children: [
                                     Icon(
-                                      Icons.local_gas_station,
+                                      Icons.price_change,
                                       color: Colors.green,
                                     ),
                                     const SizedBox(
                                       width: 5,
                                     ),
                                     Text(
-                                      "${fillup.numberOfLiters} liters - ${fillup.date.toString()}",
+                                      "${fillup.prix} '\$' - ${fillup.date.toString()}",
                                       style: GoogleFonts.montserrat(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -373,11 +376,11 @@ class TopMenuAndShowcase extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(
-                            Icons.person_2,
+                            Icons.car_crash_rounded,
                             color: Colors.orange,
                           ),
                           Text(
-                            "${v.user.nom}",
+                            "${v.model}",
                             style: GoogleFonts.montserrat(
                               fontSize: 20,
                               color: Colors.white,

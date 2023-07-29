@@ -103,6 +103,9 @@ flutter:
       - assets/images/
       - assets/logos/
       - assets/icons/
+      - assets/images/mastercard.png
+      - assets/images/contact_less.png
+
 
 
   #   - images/a_dot_ham.jpeg
@@ -150,6 +153,19 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter-Regular.ttf
+    - family: Montserrat
+      fonts:
+       - asset: assets/fonts/Montserrat-SemiBold.ttf
 
+    - family: CourrierPrime
+      fonts:
+       - asset: assets/Fonts/CourierPrime-Regular.ttf
+             # - asset: fonts/Schyler-Italic.ttf
+             #   style: italic
+    - family: Lato
+      fonts:
+       - asset: assets/Fonts/Lato-Regular.ttf
+       - asset: assets/Fonts/Lato-Bold.ttf
+         weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

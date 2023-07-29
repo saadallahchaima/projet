@@ -3,8 +3,31 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'ajouter_info.dart';
+import 'ajouter_info.dart';class CarBrand {
+  String name;
+  String imageUrl;
 
+  CarBrand({
+    required this.name,
+    required this.imageUrl,
+  });
+}
+class Voiture {
+  int? id;
+  CarBrand? marque;
+  String? Modele;
+  double? Kilometrage;
+  String? type_c;
+  DateTime? consumptionDate;
+
+  Voiture({
+    this.id,
+    this.marque,
+    this.Modele,
+    this.Kilometrage,
+    this.type_c,
+  });
+}
 class CarInfoScreen extends StatefulWidget {
   static const routeName = '/carInfo-screen';
 
@@ -27,8 +50,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   }
 
   Future<void> fetchUserCars() async {
-    // Make an HTTP request to your backend API to get the car information for the user
-    var url = Uri.parse("http://192.168.1.15/projet_api/afficher_infos.php?userId=${widget.userId}");
+    var url = Uri.parse("http://192.168.1.11/projet_api/afficher_infos.php?userId=${widget.userId}");
     var response = await http.get(url);
 
     if (response.statusCode == 200) {

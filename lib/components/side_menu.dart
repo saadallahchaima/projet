@@ -83,15 +83,18 @@ class _SideMenuState extends State<SideMenu> {
 
                           // Naviguer vers l'écran souhaité en fonction du menu sélectionné
                           if (selectedMenu == sideMenus[0]) {
-
-                            Navigator.pushNamed(context, '/UsersAccounts-screen');
+                            Navigator.pushNamed(context,'/home_page');
                           } else if (selectedMenu == sideMenus[1]) {
 
-                            Navigator.pushNamed(context, '/signup-screen');
+                            Navigator.pushNamed(context,'/signup-screen');
                           }
+     else if (selectedMenu == sideMenus[2]) {
+
+    Navigator.pushNamed(context,'/home_page');
+    }
                           // Ajouter d'autres conditions pour les autres menus si nécessaire
                         }
-                      },
+  },
 
 
 

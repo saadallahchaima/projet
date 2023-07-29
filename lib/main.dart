@@ -4,10 +4,13 @@ import 'package:projet/models/User.dart';
 import 'package:sizer/sizer.dart';
 import 'Screens/Afficher_Infos.dart';
 
+import 'Screens/FuelCard.dart';
 import 'Screens/ajouter_info.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
 
+import 'Screens/carte.dart';
+import 'Screens/home/homepage.dart';
 import 'Screens/pageuser.dart';
 import 'entry_point.dart';
 import 'screens/login_screen.dart';
@@ -28,26 +31,21 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
 
           debugShowCheckedModeBanner: false,
-        initialRoute: Bg.routeName,
+   //  initialRoute: Bg.routeName,
 
           routes: {
-          Bg.routeName: (context) => Bg(),
-      WelcomeScreen.routeName: (context) => WelcomeScreen(),
-      SignupScreen.routeName: (context) => SignupScreen(),
-       LoginScreen.routeName: (context) => LoginScreen(),
-     EntryPoint.routeName: (context) => EntryPoint(),
-           ListTest.routeName: (context) => ListTest(),
-
+        //  Bg.routeName: (context) => Bg(),
+  //WelcomeScreen.routeName: (context) => WelcomeScreen(),
+  //  SignupScreen.routeName: (context) => SignupScreen(),
+     // LoginScreen.routeName: (context) => LoginScreen(),
+  // EntryPoint.routeName: (context) => EntryPoint(),
+        //   ListTest.routeName: (context) => ListTest(),
+            Carts.routeName: (context) => Carts(),
           },
-          home: Bg(),
+          home: Carts(),
         );
       },
     );
   }
 
-  // Function to retrieve userId from SharedPreferences
-  Future<int> _getUserIdFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('userId') ?? 0;
-  }
 }

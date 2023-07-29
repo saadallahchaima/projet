@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 sharedPreferences.setString('email',emailController.text);
-    var url = Uri.parse("http://192.168.1.16/projet_api/test.php");
+    var url = Uri.parse("http://192.168.1.11/projet_api/test.php");
     var response = await http.post(
       url,
       body: {
@@ -96,7 +96,7 @@ sharedPreferences.setString('email',emailController.text);
       var role = responseData['role'];
       if (role == 'admin') {
         Get.toNamed(EntryPoint.routeName);
-      } else if (role == 'user') {
+      } else if (role == 'chauffeur') {
         Get.toNamed(ListTest.routeName);
       } else {
         showDialog(
@@ -197,7 +197,7 @@ sharedPreferences.setString('email',emailController.text);
               children: [
                 const SizedBox(height: 45),
                 Image.network(
-                  'https://img.freepik.com/vecteurs-libre/prix-eleve-pour-concept-carburant-voiture-gens-gaspillent-argent-pour-essence-changent-voiture-pour-scooter-economisent-argent-illustration-vectorielle-plane-pour-economie-ravitaillement-concept-transport-urbain_74855-10089.jpg?w=1060&t=st=1688502380~exp=1688502980~hmac=.jpg',
+                  'http://192.168.1.11/login_image.avif',
                   width: 200,
                   height: 200,
                   fit: BoxFit.cover,

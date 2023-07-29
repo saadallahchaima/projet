@@ -3,7 +3,6 @@ import 'fuelClass.dart';
 
 class Voiture {
   final String id_v;
-  final User user; // Add the User object here instead of id_user
   final String marque;
   final String model;
   final String type_c;
@@ -14,7 +13,6 @@ class Voiture {
 
   Voiture({
     required this.id_v,
-    required this.user,
     required this.marque,
     required this.model,
     required this.type_c,

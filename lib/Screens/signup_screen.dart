@@ -45,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState!.validate()) {
       // Le formulaire est valide, vous pouvez envoyer les données
       String uri = "";
-      var response = await http.post(Uri.parse("http://192.168.1.16/projet_api/insertdata.php"), body: {
+      var response = await http.post(Uri.parse("http://192.168.1.11/projet_api/insertdata.php"), body: {
         "nom": UserNameController.text,
         "email": emailController.text,
         "phone": UserPhoneController.text,

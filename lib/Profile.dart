@@ -88,6 +88,10 @@ class ProfileScreen extends StatelessWidget {
               title: 'Phone Number',
               value: user.phone ?? '', // Use the null-aware operator ??
             ),
+            ProfileDetailColumn(
+              title: 'Phone Number',
+              value: user.phone ?? '', // Use the null-aware operator ??
+            ),
           ],
         ),
       ),
