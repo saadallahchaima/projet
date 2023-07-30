@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-import 'animated_btn.dart';
-import 'custom_sign_in_dialog.dart';
+import '../utils/animated_btn.dart';
+import '../utils/custom_sign_in_dialog.dart';
 
 
 

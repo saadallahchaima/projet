@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:projet/models/User.dart';
 import 'package:sizer/sizer.dart';
+import 'Screens/Add_carte.dart';
 import 'Screens/Afficher_Infos.dart';
 
-import 'Screens/FuelCard.dart';
+import 'Screens/afficher_infos_formulaire.dart';
 import 'Screens/ajouter_info.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomScreen.dart';
 
-import 'Screens/carte.dart';
 import 'Screens/home/homepage.dart';
 import 'Screens/pageuser.dart';
 import 'entry_point.dart';
@@ -31,18 +31,19 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
 
           debugShowCheckedModeBanner: false,
-   //  initialRoute: Bg.routeName,
+    initialRoute: Bg.routeName,
 
           routes: {
-        //  Bg.routeName: (context) => Bg(),
-  //WelcomeScreen.routeName: (context) => WelcomeScreen(),
-  //  SignupScreen.routeName: (context) => SignupScreen(),
-     // LoginScreen.routeName: (context) => LoginScreen(),
-  // EntryPoint.routeName: (context) => EntryPoint(),
-        //   ListTest.routeName: (context) => ListTest(),
+       Bg.routeName: (context) => Bg(),
+  WelcomeScreen.routeName: (context) => WelcomeScreen(),
+   SignupScreen.routeName: (context) => SignupScreen(),
+      LoginScreen.routeName: (context) => LoginScreen(),
+   EntryPoint.routeName: (context) => EntryPoint(),
+           ListTest.routeName: (context) => ListTest(),
             Carts.routeName: (context) => Carts(),
+
           },
-          home: Carts(),
+          home: Bg(),
         );
       },
     );

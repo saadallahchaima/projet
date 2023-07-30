@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../../UserListPage.dart';
 import '../../listVoiture.dart';
+import '../Add_carte.dart';
 import '/Screens/page_user.dart';
 
 
@@ -33,6 +34,7 @@ class HomeScreen extends StatelessWidget {
         '/serviceuser-screen' :  (context) => page_utilisateur(),
         '/cars-screen' :  (context) => Cars(),
         '/home_page' :(context) => HomeScreen(),
+         '/cart-page':(context) => Carts(),
       },
     );
   }
@@ -116,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     CupertinoIcons.creditcard,
                     Colors.green,
                         () {
-                      Navigator.of(context).pushNamed(page_utilisateur.routeName);
+                      Navigator.of(context).pushNamed(Carts.routeName);
                     },
                   ),
                   itemDashboard(

@@ -1,49 +1,50 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:projet/models/Class_carte.dart';
 
-import '../models/Carburant.dart';
-import '../models/User.dart';
-import 'afficher_infos_formulaire.dart';
-import 'login_screen.dart';
+import '../models/Cars.dart';
 
 
-class ListTest extends StatefulWidget {
-  ListTest({Key? key}) : super(key: key);
 
+class Ajouter_voiture extends StatefulWidget {
   static const routeName = '/ajouter_info-screen';
+  Ajouter_voiture({Key? key}) : super(key: key);
+
+
 
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final ValueNotifier<Carburant> _carConsumption =
-  ValueNotifier<Carburant>(Carburant());
+  final ValueNotifier<Voiture> _carConsumption = ValueNotifier<Voiture>(
+    Voiture(
+      id_v: '0', // You can assign any default value for id_v, e.g., '0'
+      marque: '',
+      model: '',
+      type_c: '',
+      kilometrage: '0', // You can assign any default value for kilometrage, e.g., '0'
+    ),
+  );
+  final List<Voiture> voitures = [];
+
 
   @override
-  State<ListTest> createState() => _ListTestState();
+  State<Ajouter_voiture> createState() => _Ajouter_voitureState();
 }
 
-class _ListTestState extends State<ListTest> {
+class _Ajouter_voitureState extends State<Ajouter_voiture> {
   Color gradientFirst = const Color(0xff0f17ad);
   Color gradientSecond = const Color(0xFF6985e8);
   Color secondPageTitleColor = const Color(0xFFfefeff);
   Color circuitsColor = const Color(0xFF2f2f51);
-
   @override
   void initState() {
     super.initState();
-    widget._carConsumption.value.carte =
-        Carte(); // Correction de l'initialisation de _carConsumption.value.carte
   }
-
   @override
   Widget build(BuildContext context) {
-    String? finalEmail = Get.arguments as String?;
 
     return Scaffold(
       body: Container(
@@ -61,33 +62,20 @@ class _ListTestState extends State<ListTest> {
           child: Column(
             children: [
               Container(
-                padding: const EdgeInsets.only(top: 70, left: 30, right: 30),
+                padding: const EdgeInsets.all(70),
+
                 width: MediaQuery.of(context).size.width,
-                height: 200,
+                height: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            // Code pour la navigation vers une autre page
-                            // Utilisez Navigator pour naviguer vers une nouvelle page ou revenir en arrière
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 20,
-                            color: gradientSecond,
-                          ),
+                        Icon(
+                          Icons.arrow_back_ios,
+                          size: 20,
+                          color: gradientSecond,
                         ),
-
-
                         Expanded(child: Container()),
                         Icon(
                           Icons.info_outline,
@@ -100,8 +88,8 @@ class _ListTestState extends State<ListTest> {
                     Text(
                       "Car Consumption App",
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 20, // Increase the font size here
+                        fontWeight: FontWeight.bold, // Use a bolder font weight
                         color: secondPageTitleColor,
                       ),
                     ),
@@ -114,19 +102,17 @@ class _ListTestState extends State<ListTest> {
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(70),
-                      ),
+                          topRight: Radius.circular(70)),
+                      //Radius.circular(50)),
                     ),
                     child: Column(
                       children: [
-
                         const SizedBox(
-                          height: 140,
+                          height: 140, // Increase this value to add more white space
                         ),
                         Row(
                           children: [
                             const SizedBox(width: 30),
-
                             Text(
                               "Ajouter Vos infos",
                               style: TextStyle(
@@ -144,110 +130,75 @@ class _ListTestState extends State<ListTest> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                FormBuilderTextField(
-                                  name: 'carte[num_carte]',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Numéro de carte',
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) async {
-                                    setState(() {
-                                      int? numCarte = int.tryParse(value ?? '');
-                                      double? plafon = double.tryParse(value ?? '');
 
-                                      widget._carConsumption.value.carte =
-                                          Carte(num_carte: numCarte, plafon: plafon);
-                                    });
-
-
-                                  },
-                                ),
                                 const SizedBox(height: 16.0),
                                 FormBuilderTextField(
-                                  name: 'user[nom]',
+                                  name: 'Kilometrage',
                                   decoration: const InputDecoration(
-                                    labelText: 'user name',
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget._carConsumption.value.user =
-                                          User(
-                                              nom: value ?? "",
-                                              email: '',
-                                              password: '',
-                                              phone: '',
-                                              cin: '');
-                                    });
-                                  },
-                                  validator: FormBuilderValidators.required(
-                                      errorText: 'Veuillez entrer votre nom'),
-                                ),
-                                FormBuilderTextField(
-                                  name: 'Nombre de Litre',
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nombre de litre',
+                                    labelText: 'Kilometrage',
                                   ),
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     setState(() {
-                                      widget._carConsumption.value.nb_litres =
-                                          double.tryParse(value!) ?? 0;
+                                      widget._carConsumption.value.kilometrage = value!;
                                     });
                                   },
-                                  validator: FormBuilderValidators.required(
-                                      errorText: 'nombre de litre'),
+                                  validator: FormBuilderValidators.required(errorText: 'Veuillez entrer le kilométrage de votre voiture'),
                                 ),
                                 const SizedBox(height: 16.0),
                                 FormBuilderTextField(
-                                  name: '',
+                                  name: 'Modele',
                                   decoration: const InputDecoration(
-                                    labelText: 'Montant',
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      int montant = int.tryParse(value ?? '') ?? 0;
-                                      widget._carConsumption.value.montant =
-                                          montant.toDouble();
-                                      widget._carConsumption.value.calculateRest();
-                                    });
-                                  },
-                                  validator: FormBuilderValidators.required(
-                                      errorText: 'Veuillez entrer le montant'),
-                                ),
-                                const SizedBox(height: 16.0),
-                                Text(
-                                  widget._carConsumption.value.rest?.toStringAsFixed(2) ??
-                                      '0.00',
-                                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 16.0),
-                                FormBuilderDateTimePicker(
-                                  name: 'consumptionDate',
-                                  inputType: InputType.date,
-                                  format: DateFormat('yyyy-MM-dd'),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Date de consommation',
+                                    labelText: 'Marque de votre voiture',
                                   ),
                                   onChanged: (value) {
                                     setState(() {
-                                      widget._carConsumption.value.date = value;
+                                      widget._carConsumption.value.model= value!;
+                                    });
+                                  },
+                                  validator: FormBuilderValidators.required(errorText: 'Veuillez entrer la marque de votre voiture'),
+                                ),
+                                const SizedBox(height: 16.0),
+                                FormBuilderTextField(
+                                  name: 'Modele',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Modele de votre voiture',
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      widget._carConsumption.value.marque= value!;
+                                    });
+                                  },
+                                  validator: FormBuilderValidators.required(errorText: 'Veuillez entrer la marque de votre voiture'),
+                                ),
+                                const SizedBox(height: 16.0),
+                                FormBuilderDropdown(
+                                  name: 'type_c',
+                                  decoration: const InputDecoration(
+                                    labelText: 'Type de carburant',
+                                  ),
+                                  items: ['Essence', 'Gasoil'].map((type) =>
+                                      DropdownMenuItem<String>(
+                                          value: type, child: Text(type))).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      widget._carConsumption.value.type_c = value.toString();
                                     });
                                   },
                                   validator: FormBuilderValidators.required(
-                                      errorText: 'Veuillez sélectionner la date de consommation'),
+                                      errorText: 'Veuillez sélectionner le type de carburant'),
                                 ),
+
                                 const SizedBox(height: 16.0),
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: ()  {
+
                                     saveCarConsumptionDetails();
                                   },
                                   child: Container(
                                     width: 220,
                                     height: 64.32,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 15),
+                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
                                       color: const Color(0xFF136AF3),
@@ -296,32 +247,30 @@ class _ListTestState extends State<ListTest> {
   }
 
   Future<void> saveCarConsumptionDetails() async {
-    widget._carConsumption.value.calculateRest();
+
 
     Map<String, dynamic> formData = {
-      'id_user': {'Nom': widget._carConsumption.value.user?.nom},
-      'id_carte': {'num_carte': widget._carConsumption.value.carte?.num_carte},
-      'montant': widget._carConsumption.value.montant,
-      'rest': widget._carConsumption.value.rest,
-      'nombre_litres': widget._carConsumption.value.nb_litres,
-      'date': widget._carConsumption.value.date?.toIso8601String(),
+      'marque': widget._carConsumption.value.marque,
+      'Modele': widget._carConsumption.value.model,
+      'Kilometrage': widget._carConsumption.value.kilometrage,
+      'type_c': widget._carConsumption.value.type_c,
     };
 
-    print('formData: $formData');
+
+
     String jsonData = jsonEncode(formData);
 
-    final url = 'http://192.168.1.11/projet_api/fuel_calss.php';
-    final headers = {'Content-Type': 'application/json'};
-
+    var url = 'http://192.168.1.11/projet_api/ajouter_voiture.php';
     var response = await http.post(
       Uri.parse(url),
-      headers: headers,
       body: jsonData,
     );
+
 
     if (response.statusCode == 200) {
       print('Car consumption details saved!');
       print('Response: ${response.body}');
+
 
       AwesomeDialog(
         context: context,
@@ -330,19 +279,10 @@ class _ListTestState extends State<ListTest> {
         showCloseIcon: true,
         title: "Saved",
         desc: "Saved",
-        btnOkOnPress: () {
-          // Navigate to the HistoriquePage after saving
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  HistoriquePage( carburant: widget._carConsumption.value),
-            ),
-          );
-        }
+        btnOkOnPress: () {},
       ).show();
-    } else {
+    }
+    else {
       print('Failed to save car consumption details.');
       AwesomeDialog(
         context: context,
@@ -356,6 +296,4 @@ class _ListTestState extends State<ListTest> {
       print('Response: ${response.body}');
     }
   }
-
-
 }

@@ -6,6 +6,7 @@ import '../models/Cars.dart';
 import '../constants.dart';
 import '../components/search_box.dart';
 import 'Screens/DetailesCars.dart';
+import 'Screens/ajouter_voiture.dart';
 import 'models/fuelClass.dart';
 
 class Cars extends StatefulWidget {
@@ -18,11 +19,11 @@ class Cars extends StatefulWidget {
 }
 
 class _CarsState extends State<Cars> {
-  final String apiUrl = 'http://192.168.137.61/projet_api/consommation.php';
+  final String apiUrl = 'http://192.168.1.11/projet_api/consommation.php';
   List<Voiture> cars = [];
 
   Future<List<Voiture>> chercherCar(String searchTerm) async {
-    final String url = 'http://192.168.137.61/projet_api/search.php?search=$searchTerm';
+    final String url = 'http://192.168.1.11/projet_api/search.php?search=$searchTerm';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -30,24 +31,13 @@ class _CarsState extends State<Cars> {
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
         return jsonData.map((data) {
-          List<FuelFillup> fuelFillups = [];
-          if (data['fuel'] != null) {
-            fuelFillups = List.from(data['fuel']).map((fuelData) {
-              return FuelFillup(
-                id: int.parse(fuelData['id_fuel'].toString()),
-                date: DateTime.parse(fuelData['date'].toString()),
-                numberOfLiters: double.parse(fuelData['nombre_litres'].toString()),
-                prix: double.parse(fuelData['prix'].toString()),
-              );
-            }).toList();
-          }
+
           return Voiture(
             id_v: data['id_v'].toString(),
             marque: data['marque'].toString(),
             model: data['Modele'].toString(),
             type_c: data['type_c'].toString(),
             kilometrage: data['Kilometrage'].toString(),
-            fuelFillups: fuelFillups,
           );
         }).toList();
       } else {
@@ -67,18 +57,6 @@ class _CarsState extends State<Cars> {
       return jsonData.map((data) {
 
 
-        // Fetch fuel fill-ups data
-        List<FuelFillup> fuelFillups = [];
-        if (data['fuel'] != null) {
-          fuelFillups = List.from(data['fuel']).map((fuelData) {
-            return FuelFillup(
-              id: int.parse(fuelData['id_fuel'].toString()),
-              date: DateTime.parse(fuelData['date'].toString()),
-              numberOfLiters: double.parse(fuelData['nombre_litres'].toString()),
-              prix: double.parse(fuelData['prix'].toString()),
-            );
-          }).toList();
-        }
 
         // Create the Car object with the associated User object and fuel fill-ups
         return Voiture(
@@ -87,7 +65,6 @@ class _CarsState extends State<Cars> {
           model: data['Modele'].toString(),
           type_c: data['type_c'].toString(),
           kilometrage: data['Kilometrage'].toString(),
-          fuelFillups: fuelFillups,
         );
       }).toList();
     } else {
@@ -109,20 +86,13 @@ class _CarsState extends State<Cars> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-
+    return Scaffold(
+      appBar: _buildAppBarWithAddIcon(),
+    body: SafeArea(
       bottom: false,
       child: Column(
         children: <Widget>[
-          SearchBox(
-            onChanged: (value) {
-              chercherCar(value).then((data) {
-               setState(() {
-               cars = data;
-                     });
-                    });
-               },
-          ), 
+
           const SizedBox(height: kDefaultPadding / 2),
           Expanded(
             child: Stack(
@@ -275,6 +245,40 @@ class _CarsState extends State<Cars> {
           ),
         ],
       ),
+    ),
+    );
+  }
+  AppBar _buildAppBarWithAddIcon() {
+    return AppBar(
+      backgroundColor: Color(0xFF092562), // Blue color
+      title: Text(
+        "Liste des cartes",
+        style: TextStyle(color: Colors.white), // Set the text color to white
+      ),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 24.0),
+          alignment: Alignment.center,
+          child: FloatingActionButton(
+            elevation: 2.0,
+            onPressed: () {
+      Navigator.push(
+          context,
+      MaterialPageRoute(builder: (context) => Ajouter_voiture()),
+         );
+            },
+            backgroundColor: Color(0xFF00030A),
+            mini: false,
+            child: Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 }

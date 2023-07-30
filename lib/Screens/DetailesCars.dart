@@ -52,7 +52,7 @@ class DetailCars extends StatelessWidget {
             Container(
               margin: const EdgeInsets.fromLTRB(20, 15, 0, 10),
               child: Text(
-                car.marque,
+                car.marque as String,
                 style: TextConstants.titleSection,
               ),
             ),
@@ -132,12 +132,7 @@ class DetailCars extends StatelessWidget {
                                   color: Colors.white,
                                   fontWeight: FontWeight.w300,
                                 ),
-                                children: <TextSpan>[
-                                  for (var fuelFillup in car.fuelFillups)
-                                    TextSpan(
-                                      text:  'Litres: ${fuelFillup.numberOfLiters}',
-                                    ),
-                                ],
+
                               ),
                             ),
 
@@ -210,53 +205,21 @@ class DetailCars extends StatelessWidget {
                     child: Column(
                       children: [
 
-                        if (car.fuelFillups.isNotEmpty)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Fuel Price:",
-                                style: TextConstants.titleSection,
-                              ),
-                              for (var fillup in car.fuelFillups)
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.price_change,
-                                      color: Colors.green,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      "${fillup.prix} '\$' - ${fillup.date.toString()}",
-                                      style: GoogleFonts.montserrat(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+
                             ],
                           ),
-                      ],
-                    ),
+                  ),
+              ],
+                    )
                   ),
                 ],
 
               ),
 
-            ),
-          ],
-
-        ),
-        bottomSheet: const PriceAndBookNow(),
-      ),
+    ),
     );
-  }
 }
-
+}
 class PriceAndBookNow extends StatelessWidget {
   const PriceAndBookNow({
     Key? key,
